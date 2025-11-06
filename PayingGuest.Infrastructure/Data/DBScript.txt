@@ -1,0 +1,897 @@
+USE [PayingGuestDB]
+GO
+/****** Object:  Schema [PG]    Script Date: 10/5/2025 9:34:08 PM ******/
+CREATE SCHEMA [PG]
+GO
+/****** Object:  Table [PG].[AuditLog]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[AuditLog](
+	[AuditId] [int] IDENTITY(1,1) NOT NULL,
+	[TableName] [nvarchar](100) NOT NULL,
+	[RecordId] [int] NOT NULL,
+	[Action] [nvarchar](20) NOT NULL,
+	[OldValues] [nvarchar](max) NULL,
+	[NewValues] [nvarchar](max) NULL,
+	[UserId] [int] NULL,
+	[UserName] [nvarchar](100) NULL,
+	[IpAddress] [nvarchar](45) NULL,
+	[UserAgent] [nvarchar](500) NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+ CONSTRAINT [PK_AuditLog] PRIMARY KEY CLUSTERED 
+(
+	[AuditId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Bed]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Bed](
+	[BedId] [int] IDENTITY(1,1) NOT NULL,
+	[RoomId] [int] NOT NULL,
+	[BedNumber] [nvarchar](10) NOT NULL,
+	[BedType] [nvarchar](50) NOT NULL,
+	[Status] [nvarchar](20) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Bed] PRIMARY KEY CLUSTERED 
+(
+	[BedId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Booking]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Booking](
+	[BookingId] [int] IDENTITY(1,1) NOT NULL,
+	[BookingNumber] [nvarchar](50) NOT NULL,
+	[PropertyId] [int] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[BedId] [int] NOT NULL,
+	[CheckInDate] [date] NOT NULL,
+	[CheckOutDate] [date] NULL,
+	[PlannedCheckOutDate] [date] NOT NULL,
+	[MonthlyRent] [decimal](10, 2) NOT NULL,
+	[SecurityDeposit] [decimal](10, 2) NOT NULL,
+	[Status] [nvarchar](20) NOT NULL,
+	[BookingType] [nvarchar](20) NOT NULL,
+	[SpecialRequests] [nvarchar](1000) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Booking] PRIMARY KEY CLUSTERED 
+(
+	[BookingId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[ClientToken]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[ClientToken](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [nvarchar](300) NOT NULL,
+	[AccessToken] [nvarchar](max) NOT NULL,
+	[TokenType] [nvarchar](50) NOT NULL,
+	[ExpiresAt] [datetime2](7) NOT NULL,
+	[RefreshToken] [nvarchar](max) NULL,
+	[Scope] [nvarchar](500) NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[LastUsedDate] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_ClientToken] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Document]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Document](
+	[DocumentId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[DocumentType] [nvarchar](50) NOT NULL,
+	[DocumentName] [nvarchar](255) NOT NULL,
+	[FileName] [nvarchar](255) NOT NULL,
+	[FilePath] [nvarchar](500) NOT NULL,
+	[FileSize] [bigint] NOT NULL,
+	[ContentType] [nvarchar](100) NOT NULL,
+	[UploadedDate] [datetime2](7) NOT NULL,
+	[IsVerified] [bit] NOT NULL,
+	[VerifiedBy] [nvarchar](100) NULL,
+	[VerifiedDate] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_Document] PRIMARY KEY CLUSTERED 
+(
+	[DocumentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Floor]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Floor](
+	[FloorId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyId] [int] NOT NULL,
+	[FloorNumber] [int] NOT NULL,
+	[FloorName] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Floor] PRIMARY KEY CLUSTERED 
+(
+	[FloorId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Maintenance]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Maintenance](
+	[MaintenanceId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyId] [int] NOT NULL,
+	[RoomId] [int] NULL,
+	[BedId] [int] NULL,
+	[IssueType] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](1000) NOT NULL,
+	[Priority] [nvarchar](20) NOT NULL,
+	[Status] [nvarchar](20) NOT NULL,
+	[ReportedBy] [int] NOT NULL,
+	[AssignedTo] [int] NULL,
+	[EstimatedCost] [decimal](10, 2) NULL,
+	[ActualCost] [decimal](10, 2) NULL,
+	[CompletedDate] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Maintenance] PRIMARY KEY CLUSTERED 
+(
+	[MaintenanceId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Menu]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Menu](
+	[MenuId] [int] IDENTITY(1,1) NOT NULL,
+	[MenuName] [nvarchar](100) NOT NULL,
+	[MenuTitle] [nvarchar](100) NOT NULL,
+	[MenuUrl] [nvarchar](500) NULL,
+	[MenuIcon] [nvarchar](100) NULL,
+	[ParentMenuId] [int] NULL,
+	[DisplayOrder] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+ CONSTRAINT [PK_Menu] PRIMARY KEY CLUSTERED 
+(
+	[MenuId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Notification]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Notification](
+	[NotificationId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyId] [int] NOT NULL,
+	[UserId] [int] NULL,
+	[NotificationType] [nvarchar](50) NOT NULL,
+	[Subject] [nvarchar](255) NOT NULL,
+	[Message] [nvarchar](2000) NOT NULL,
+	[Recipient] [nvarchar](255) NOT NULL,
+	[Status] [nvarchar](20) NOT NULL,
+	[Priority] [nvarchar](20) NOT NULL,
+	[ScheduledDate] [datetime2](7) NULL,
+	[SentDate] [datetime2](7) NULL,
+	[ReadDate] [datetime2](7) NULL,
+	[RetryCount] [int] NOT NULL,
+	[ErrorMessage] [nvarchar](1000) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Notification] PRIMARY KEY CLUSTERED 
+(
+	[NotificationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Payment]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Payment](
+	[PaymentId] [int] IDENTITY(1,1) NOT NULL,
+	[BookingId] [int] NOT NULL,
+	[PaymentNumber] [nvarchar](50) NOT NULL,
+	[PaymentType] [nvarchar](20) NOT NULL,
+	[PaymentMethod] [nvarchar](20) NOT NULL,
+	[Amount] [decimal](10, 2) NOT NULL,
+	[PaymentDate] [datetime2](7) NOT NULL,
+	[DueDate] [date] NULL,
+	[Status] [nvarchar](20) NOT NULL,
+	[TransactionId] [nvarchar](100) NULL,
+	[BankReference] [nvarchar](100) NULL,
+	[UpiReference] [nvarchar](100) NULL,
+	[Remarks] [nvarchar](500) NULL,
+	[ReceiptNumber] [nvarchar](50) NULL,
+	[ReceivedBy] [nvarchar](100) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Payment] PRIMARY KEY CLUSTERED 
+(
+	[PaymentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Property]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Property](
+	[PropertyId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyName] [nvarchar](255) NOT NULL,
+	[PropertyCode] [nvarchar](50) NOT NULL,
+	[Address] [nvarchar](500) NOT NULL,
+	[City] [nvarchar](100) NOT NULL,
+	[State] [nvarchar](100) NOT NULL,
+	[Country] [nvarchar](100) NOT NULL,
+	[PostalCode] [nvarchar](20) NOT NULL,
+	[ContactNumber] [nvarchar](20) NULL,
+	[EmailAddress] [nvarchar](255) NULL,
+	[TotalFloors] [int] NOT NULL,
+	[TotalRooms] [int] NOT NULL,
+	[PropertyType] [nvarchar](50) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Property] PRIMARY KEY CLUSTERED 
+(
+	[PropertyId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Role]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Role](
+	[RoleId] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Role] PRIMARY KEY CLUSTERED 
+(
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[RoleMenuPermission]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[RoleMenuPermission](
+	[RoleMenuPermissionId] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[MenuId] [int] NOT NULL,
+	[CanView] [bit] NOT NULL,
+	[CanCreate] [bit] NOT NULL,
+	[CanEdit] [bit] NOT NULL,
+	[CanDelete] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_RoleMenuPermission] PRIMARY KEY CLUSTERED 
+(
+	[RoleMenuPermissionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Room]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Room](
+	[RoomId] [int] IDENTITY(1,1) NOT NULL,
+	[FloorId] [int] NOT NULL,
+	[RoomNumber] [nvarchar](20) NOT NULL,
+	[RoomName] [nvarchar](100) NOT NULL,
+	[RoomType] [nvarchar](50) NOT NULL,
+	[TotalBeds] [int] NOT NULL,
+	[RentPerBed] [decimal](10, 2) NOT NULL,
+	[SecurityDeposit] [decimal](10, 2) NOT NULL,
+	[Amenities] [nvarchar](1000) NULL,
+	[Description] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Room] PRIMARY KEY CLUSTERED 
+(
+	[RoomId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[Setting]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[Setting](
+	[SettingId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyId] [int] NULL,
+	[SettingKey] [nvarchar](100) NOT NULL,
+	[SettingValue] [nvarchar](1000) NOT NULL,
+	[SettingType] [nvarchar](50) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[IsEncrypted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_Setting] PRIMARY KEY CLUSTERED 
+(
+	[SettingId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[User]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[User](
+	[UserId] [int] IDENTITY(1,1) NOT NULL,
+	[PropertyId] [int] NOT NULL,
+	[UserType] [nvarchar](20) NOT NULL,
+	[FirstName] [nvarchar](100) NOT NULL,
+	[LastName] [nvarchar](100) NOT NULL,
+	[EmailAddress] [nvarchar](255) NOT NULL,
+	[PhoneNumber] [nvarchar](20) NOT NULL,
+	[AlternatePhoneNumber] [nvarchar](20) NULL,
+	[DateOfBirth] [date] NULL,
+	[Gender] [nvarchar](10) NULL,
+	[BloodGroup] [nvarchar](5) NULL,
+	[EmergencyContactName] [nvarchar](200) NULL,
+	[EmergencyContactNumber] [nvarchar](20) NULL,
+	[PermanentAddress] [nvarchar](500) NULL,
+	[CurrentAddress] [nvarchar](500) NULL,
+	[Occupation] [nvarchar](100) NULL,
+	[Company] [nvarchar](200) NULL,
+	[AadharNumber] [nvarchar](20) NULL,
+	[PanNumber] [nvarchar](20) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL,
+	[IdentityServerUserId] [int] NULL,
+ CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[UserRole]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[UserRole](
+	[UserRoleId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK_UserRole] PRIMARY KEY CLUSTERED 
+(
+	[UserRoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [PG].[UserToken]    Script Date: 10/5/2025 9:34:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [PG].[UserToken](
+	[UserTokenId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[AccessToken] [nvarchar](max) NOT NULL,
+	[RefreshToken] [nvarchar](max) NULL,
+	[TokenType] [nvarchar](50) NOT NULL,
+	[ExpiresAt] [datetime2](7) NOT NULL,
+	[RefreshTokenExpiresAt] [datetime2](7) NULL,
+	[IsRevoked] [bit] NOT NULL,
+	[RevokedAt] [datetime2](7) NULL,
+	[RevokedByIp] [nvarchar](50) NULL,
+	[ReplacedByToken] [nvarchar](max) NULL,
+	[CreatedAt] [datetime2](7) NOT NULL,
+	[CreatedByIp] [nvarchar](50) NULL,
+	[DeviceInfo] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_UserToken] PRIMARY KEY CLUSTERED 
+(
+	[UserTokenId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [PG].[AuditLog] ON 
+
+INSERT [PG].[AuditLog] ([AuditId], [TableName], [RecordId], [Action], [OldValues], [NewValues], [UserId], [UserName], [IpAddress], [UserAgent], [CreatedDate]) VALUES (7, N'User', 12, N'INSERT', NULL, N'{"UserId":12,"PropertyId":1,"UserType":"Admin","FirstName":"Sabari","LastName":"Malai","FullName":"Sabari Malai","EmailAddress":"Sabariadmin@sunrisepg.com","PhoneNumber":"\u002B971501234567","AlternatePhoneNumber":"\u002B971509876543","DateOfBirth":"1990-05-15T00:00:00","Gender":"Male","BloodGroup":"B\u002B","EmergencyContactName":"Rajamanikkam","EmergencyContactNumber":"\u002B971507654321","PermanentAddress":"Pudukkottai","CurrentAddress":"Flat 203, Palm Towers, Dubai, UAE","Occupation":"Software Engineer","Company":"ThoughtWalk","AadharNumber":"123456789012","PanNumber":"ABCDE1234F","IsActive":true,"CreatedDate":"2025-10-05T14:51:59.6683004Z","PropertyName":"Sunrise PG","IdentityServerUserId":60,"Roles":[],"RoleIds":[],"CreatedBy":null,"LastModifiedDate":null,"LastModifiedBy":null}', NULL, N'System', NULL, NULL, CAST(N'2025-10-05T14:52:03.8720499' AS DateTime2))
+INSERT [PG].[AuditLog] ([AuditId], [TableName], [RecordId], [Action], [OldValues], [NewValues], [UserId], [UserName], [IpAddress], [UserAgent], [CreatedDate]) VALUES (8, N'User', 13, N'INSERT', NULL, N'{"UserId":13,"PropertyId":1,"UserType":"Admin","FirstName":"Ganesh","LastName":"Ganesh","FullName":"Ganesh Ganesh","EmailAddress":"Ganesh@sunrisepg.com","PhoneNumber":"\u002B971501234567","AlternatePhoneNumber":"\u002B971509876543","DateOfBirth":"1990-05-15T00:00:00","Gender":"Male","BloodGroup":"B\u002B","EmergencyContactName":"Rajamanikkam","EmergencyContactNumber":"\u002B971507654321","PermanentAddress":"Pudukkottai","CurrentAddress":"Flat 203, Palm Towers, Dubai, UAE","Occupation":"Software Engineer","Company":"ThoughtWalk","AadharNumber":"123456789012","PanNumber":"ABCDE1234F","IsActive":true,"CreatedDate":"2025-10-05T15:37:17.6242265Z","PropertyName":"Sunrise PG","IdentityServerUserId":61,"Roles":[],"RoleIds":[],"CreatedBy":null,"LastModifiedDate":null,"LastModifiedBy":null}', NULL, N'System', NULL, NULL, CAST(N'2025-10-05T15:37:25.7279496' AS DateTime2))
+SET IDENTITY_INSERT [PG].[AuditLog] OFF
+GO
+SET IDENTITY_INSERT [PG].[Bed] ON 
+
+INSERT [PG].[Bed] ([BedId], [RoomId], [BedNumber], [BedType], [Status], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (1, 1, N'B1', N'Single', N'Available', 1, CAST(N'2025-09-26T19:52:06.5433333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Bed] ([BedId], [RoomId], [BedNumber], [BedType], [Status], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (2, 1, N'B2', N'Single', N'Available', 1, CAST(N'2025-09-26T19:52:06.5466667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Bed] ([BedId], [RoomId], [BedNumber], [BedType], [Status], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (3, 1, N'B3', N'Single', N'Available', 1, CAST(N'2025-09-26T19:52:06.5466667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Bed] ([BedId], [RoomId], [BedNumber], [BedType], [Status], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (4, 1, N'B4', N'Single', N'Available', 1, CAST(N'2025-09-26T19:52:06.5466667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Bed] ([BedId], [RoomId], [BedNumber], [BedType], [Status], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (5, 1, N'B5', N'Single', N'Available', 1, CAST(N'2025-09-26T19:52:06.5466667' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[Bed] OFF
+GO
+SET IDENTITY_INSERT [PG].[ClientToken] ON 
+
+INSERT [PG].[ClientToken] ([Id], [ClientId], [AccessToken], [TokenType], [ExpiresAt], [RefreshToken], [Scope], [CreatedDate], [LastUsedDate], [IsActive]) VALUES (14, N'client_web_app_001', N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJjbGllbnRfd2ViX2FwcF8wMDEiLCJpc3MiOiJJZGVudGl0eVNlcnZlciIsImF1ZCI6WyJJZGVudGl0eVNlcnZlckFQSSIsIklkZW50aXR5U2VydmVyQVBJIl0sImV4cCI6MTc1OTY3OTI2OX0.dyrr4s5vP2mr8Z4l4-8uS5tBU6JAejMLpKTPP4iCEMI', N'Bearer', CAST(N'2025-10-05T15:47:51.7388375' AS DateTime2), NULL, N'read write', CAST(N'2025-10-05T14:47:51.7391114' AS DateTime2), NULL, 0)
+INSERT [PG].[ClientToken] ([Id], [ClientId], [AccessToken], [TokenType], [ExpiresAt], [RefreshToken], [Scope], [CreatedDate], [LastUsedDate], [IsActive]) VALUES (15, N'client_web_app_001', N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJjbGllbnRfd2ViX2FwcF8wMDEiLCJpc3MiOiJJZGVudGl0eVNlcnZlciIsImF1ZCI6WyJJZGVudGl0eVNlcnZlckFQSSIsIklkZW50aXR5U2VydmVyQVBJIl0sImV4cCI6MTc1OTY3OTUxMH0.faargyd0XhAkpI24G1REA1hSk8hr9ZgJivGzu5DHXHc', N'Bearer', CAST(N'2025-10-05T15:51:52.5990269' AS DateTime2), NULL, N'read write', CAST(N'2025-10-05T14:51:52.5990303' AS DateTime2), NULL, 0)
+INSERT [PG].[ClientToken] ([Id], [ClientId], [AccessToken], [TokenType], [ExpiresAt], [RefreshToken], [Scope], [CreatedDate], [LastUsedDate], [IsActive]) VALUES (16, N'client_web_app_001', N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJjbGllbnRfd2ViX2FwcF8wMDEiLCJpc3MiOiJJZGVudGl0eVNlcnZlciIsImF1ZCI6WyJJZGVudGl0eVNlcnZlckFQSSIsIklkZW50aXR5U2VydmVyQVBJIl0sImV4cCI6MTc1OTY4MjIyNn0.v5PPeeYJTZNbjQ5UY6nyvecjy4e9MqJX_efWHfghZvg', N'Bearer', CAST(N'2025-10-05T16:37:09.2103494' AS DateTime2), NULL, N'read write', CAST(N'2025-10-05T15:37:09.2106090' AS DateTime2), NULL, 1)
+SET IDENTITY_INSERT [PG].[ClientToken] OFF
+GO
+SET IDENTITY_INSERT [PG].[Floor] ON 
+
+INSERT [PG].[Floor] ([FloorId], [PropertyId], [FloorNumber], [FloorName], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (1, 1, 1, N'Ground Floor', NULL, 1, CAST(N'2025-09-26T19:52:05.8700000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Floor] ([FloorId], [PropertyId], [FloorNumber], [FloorName], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (2, 1, 2, N'First Floor', NULL, 1, CAST(N'2025-09-26T19:52:05.8700000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Floor] ([FloorId], [PropertyId], [FloorNumber], [FloorName], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (3, 1, 3, N'Second Floor', NULL, 1, CAST(N'2025-09-26T19:52:05.8700000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Floor] ([FloorId], [PropertyId], [FloorNumber], [FloorName], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (4, 1, 4, N'Third Floor', NULL, 1, CAST(N'2025-09-26T19:52:05.8700000' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[Floor] OFF
+GO
+SET IDENTITY_INSERT [PG].[Menu] ON 
+
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (1, N'Dashboard', N'Dashboard', N'/dashboard', N'dashboard', NULL, 1, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (2, N'Properties', N'Properties', N'/properties', N'home', NULL, 2, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (3, N'Users', N'Users', N'/users', N'people', NULL, 3, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (4, N'Tenants', N'Tenants', N'/tenants', N'person', NULL, 4, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (5, N'Payments', N'Payments', N'/payments', N'payment', NULL, 5, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (6, N'Reports', N'Reports', N'/reports', N'analytics', NULL, 6, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+INSERT [PG].[Menu] ([MenuId], [MenuName], [MenuTitle], [MenuUrl], [MenuIcon], [ParentMenuId], [DisplayOrder], [IsActive], [CreatedDate]) VALUES (7, N'Settings', N'Settings', N'/settings', N'settings', NULL, 7, 1, CAST(N'2025-10-03T08:12:04.0333333' AS DateTime2))
+SET IDENTITY_INSERT [PG].[Menu] OFF
+GO
+SET IDENTITY_INSERT [PG].[Property] ON 
+
+INSERT [PG].[Property] ([PropertyId], [PropertyName], [PropertyCode], [Address], [City], [State], [Country], [PostalCode], [ContactNumber], [EmailAddress], [TotalFloors], [TotalRooms], [PropertyType], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (1, N'Sunrise PG', N'SPG001', N'123 MG Road', N'Bangalore', N'Karnataka', N'India', N'560001', N'+91-9876543210', N'info@sunrisepg.com', 4, 100, N'PayingGuest', 1, CAST(N'2025-09-26T19:52:05.8500000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Property] ([PropertyId], [PropertyName], [PropertyCode], [Address], [City], [State], [Country], [PostalCode], [ContactNumber], [EmailAddress], [TotalFloors], [TotalRooms], [PropertyType], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (2, N'Green Valley PG', N'GVP001', N'456 Park Street', N'Mumbai', N'Maharashtra', N'India', N'400001', N'+91-9876543211', N'info@greenvalleypg.com', 5, 125, N'PayingGuest', 1, CAST(N'2025-09-26T19:52:05.8500000' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[Property] OFF
+GO
+SET IDENTITY_INSERT [PG].[Role] ON 
+
+INSERT [PG].[Role] ([RoleId], [RoleName], [Description], [IsActive], [CreatedDate], [CreatedBy]) VALUES (1, N'Admin', N'System Administrator', 1, CAST(N'2025-10-03T08:12:04.0166667' AS DateTime2), NULL)
+INSERT [PG].[Role] ([RoleId], [RoleName], [Description], [IsActive], [CreatedDate], [CreatedBy]) VALUES (2, N'PropertyOwner', N'Property Owner', 1, CAST(N'2025-10-03T08:12:04.0166667' AS DateTime2), NULL)
+INSERT [PG].[Role] ([RoleId], [RoleName], [Description], [IsActive], [CreatedDate], [CreatedBy]) VALUES (3, N'Tenant', N'Paying Guest/Tenant', 1, CAST(N'2025-10-03T08:12:04.0166667' AS DateTime2), NULL)
+INSERT [PG].[Role] ([RoleId], [RoleName], [Description], [IsActive], [CreatedDate], [CreatedBy]) VALUES (4, N'Staff', N'Property Staff', 1, CAST(N'2025-10-03T08:12:04.0166667' AS DateTime2), NULL)
+SET IDENTITY_INSERT [PG].[Role] OFF
+GO
+SET IDENTITY_INSERT [PG].[RoleMenuPermission] ON 
+
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (6, 1, 1, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (7, 1, 2, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (8, 1, 3, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (9, 1, 4, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (10, 1, 5, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (11, 1, 6, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[RoleMenuPermission] ([RoleMenuPermissionId], [RoleId], [MenuId], [CanView], [CanCreate], [CanEdit], [CanDelete], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (12, 1, 7, 1, 1, 1, 1, 1, CAST(N'2025-10-03T08:12:04.0566667' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[RoleMenuPermission] OFF
+GO
+SET IDENTITY_INSERT [PG].[Room] ON 
+
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (1, 1, N'G01', N'Ground Floor Room 1', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:05.8800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (2, 1, N'G02', N'Ground Floor Room 2', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4733333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (3, 1, N'G03', N'Ground Floor Room 3', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4733333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (4, 1, N'G04', N'Ground Floor Room 4', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (5, 1, N'G05', N'Ground Floor Room 5', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (6, 1, N'G06', N'Ground Floor Room 6', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (7, 1, N'G07', N'Ground Floor Room 7', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (8, 1, N'G08', N'Ground Floor Room 8', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (9, 1, N'G09', N'Ground Floor Room 9', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4766667' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (10, 1, N'G10', N'Ground Floor Room 10', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (11, 1, N'G11', N'Ground Floor Room 11', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (12, 1, N'G12', N'Ground Floor Room 12', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (13, 1, N'G13', N'Ground Floor Room 13', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (14, 1, N'G14', N'Ground Floor Room 14', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (15, 1, N'G15', N'Ground Floor Room 15', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (16, 1, N'G16', N'Ground Floor Room 16', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (17, 1, N'G17', N'Ground Floor Room 17', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (18, 1, N'G18', N'Ground Floor Room 18', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4800000' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (19, 1, N'G19', N'Ground Floor Room 19', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (20, 1, N'G20', N'Ground Floor Room 20', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (21, 1, N'G21', N'Ground Floor Room 21', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (22, 1, N'G22', N'Ground Floor Room 22', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (23, 1, N'G23', N'Ground Floor Room 23', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (24, 1, N'G24', N'Ground Floor Room 24', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Room] ([RoomId], [FloorId], [RoomNumber], [RoomName], [RoomType], [TotalBeds], [RentPerBed], [SecurityDeposit], [Amenities], [Description], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (25, 1, N'G25', N'Ground Floor Room 25', N'Standard', 5, CAST(8000.00 AS Decimal(10, 2)), CAST(5000.00 AS Decimal(10, 2)), NULL, NULL, 1, CAST(N'2025-09-26T19:52:06.4833333' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[Room] OFF
+GO
+SET IDENTITY_INSERT [PG].[Setting] ON 
+
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (1, 1, N'EMAIL_SMTP_HOST', N'smtp.gmail.com', N'String', N'SMTP Host for email notifications', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (2, 1, N'EMAIL_SMTP_PORT', N'587', N'Int', N'SMTP Port for email notifications', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (3, 1, N'EMAIL_FROM_ADDRESS', N'noreply@sunrisepg.com', N'String', N'From email address', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (4, 1, N'PAYMENT_UPI_ID', N'sunrisepg@paytm', N'String', N'UPI ID for payments', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (5, 1, N'LATE_PAYMENT_FINE', N'100.00', N'Decimal', N'Late payment fine amount', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (6, NULL, N'DEFAULT_CURRENCY', N'INR', N'String', N'Default currency for the application', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+INSERT [PG].[Setting] ([SettingId], [PropertyId], [SettingKey], [SettingValue], [SettingType], [Description], [IsEncrypted], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy]) VALUES (7, NULL, N'MAX_FILE_UPLOAD_SIZE', N'5242880', N'Int', N'Maximum file upload size in bytes (5MB)', 0, 1, CAST(N'2025-09-26T19:52:06.5833333' AS DateTime2), NULL, NULL, NULL)
+SET IDENTITY_INSERT [PG].[Setting] OFF
+GO
+SET IDENTITY_INSERT [PG].[User] ON 
+
+INSERT [PG].[User] ([UserId], [PropertyId], [UserType], [FirstName], [LastName], [EmailAddress], [PhoneNumber], [AlternatePhoneNumber], [DateOfBirth], [Gender], [BloodGroup], [EmergencyContactName], [EmergencyContactNumber], [PermanentAddress], [CurrentAddress], [Occupation], [Company], [AadharNumber], [PanNumber], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy], [IdentityServerUserId]) VALUES (11, 1, N'Admin', N'Rajamanikkam', N'Savurimuthu', N'admin@sunrisepg.com', N'+971501234567', N'+971509876543', CAST(N'1990-05-15' AS Date), N'Male', N'B+', N'Rajamanikkam', N'+971507654321', N'Pudukkottai', N'Flat 203, Palm Towers, Dubai, UAE', N'Software Engineer', N'ThoughtWalk', N'123456789012', N'ABCDE1234F', 1, CAST(N'2025-10-05T14:48:01.5356343' AS DateTime2), NULL, NULL, NULL, 59)
+INSERT [PG].[User] ([UserId], [PropertyId], [UserType], [FirstName], [LastName], [EmailAddress], [PhoneNumber], [AlternatePhoneNumber], [DateOfBirth], [Gender], [BloodGroup], [EmergencyContactName], [EmergencyContactNumber], [PermanentAddress], [CurrentAddress], [Occupation], [Company], [AadharNumber], [PanNumber], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy], [IdentityServerUserId]) VALUES (12, 1, N'Admin', N'Sabari', N'Malai', N'Sabariadmin@sunrisepg.com', N'+971501234567', N'+971509876543', CAST(N'1990-05-15' AS Date), N'Male', N'B+', N'Rajamanikkam', N'+971507654321', N'Pudukkottai', N'Flat 203, Palm Towers, Dubai, UAE', N'Software Engineer', N'ThoughtWalk', N'123456789012', N'ABCDE1234F', 1, CAST(N'2025-10-05T14:51:59.6683004' AS DateTime2), NULL, NULL, NULL, 60)
+INSERT [PG].[User] ([UserId], [PropertyId], [UserType], [FirstName], [LastName], [EmailAddress], [PhoneNumber], [AlternatePhoneNumber], [DateOfBirth], [Gender], [BloodGroup], [EmergencyContactName], [EmergencyContactNumber], [PermanentAddress], [CurrentAddress], [Occupation], [Company], [AadharNumber], [PanNumber], [IsActive], [CreatedDate], [CreatedBy], [LastModifiedDate], [LastModifiedBy], [IdentityServerUserId]) VALUES (13, 1, N'Admin', N'Ganesh', N'Ganesh', N'Ganesh@sunrisepg.com', N'+971501234567', N'+971509876543', CAST(N'1990-05-15' AS Date), N'Male', N'B+', N'Rajamanikkam', N'+971507654321', N'Pudukkottai', N'Flat 203, Palm Towers, Dubai, UAE', N'Software Engineer', N'ThoughtWalk', N'123456789012', N'ABCDE1234F', 1, CAST(N'2025-10-05T15:37:17.6242265' AS DateTime2), NULL, NULL, NULL, 61)
+SET IDENTITY_INSERT [PG].[User] OFF
+GO
+SET IDENTITY_INSERT [PG].[UserRole] ON 
+
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (5, 11, 1, 1, CAST(N'2025-10-05T14:48:06.1702978' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (6, 11, 2, 1, CAST(N'2025-10-05T14:48:07.1580405' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (7, 12, 1, 1, CAST(N'2025-10-05T14:52:01.2095795' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (8, 12, 2, 1, CAST(N'2025-10-05T14:52:02.0583502' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (9, 13, 1, 1, CAST(N'2025-10-05T15:37:19.9830686' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (10, 13, 2, 1, CAST(N'2025-10-05T15:37:20.9754379' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (11, 13, 3, 1, CAST(N'2025-10-05T15:37:21.9606983' AS DateTime2), NULL)
+INSERT [PG].[UserRole] ([UserRoleId], [UserId], [RoleId], [IsActive], [CreatedDate], [CreatedBy]) VALUES (12, 13, 4, 1, CAST(N'2025-10-05T15:37:23.0968083' AS DateTime2), NULL)
+SET IDENTITY_INSERT [PG].[UserRole] OFF
+GO
+SET IDENTITY_INSERT [PG].[UserToken] ON 
+
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (1, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODIzOTF9.Z98826BV_qwgfLFEZj4kyT8I8Ld2Uf8ufmwYRVpdNgo', N'NWyqBBuRwU+SBzSJi5UEIg==', N'Bearer', CAST(N'2025-10-05T16:41:45.2675454' AS DateTime2), CAST(N'2025-10-12T15:41:45.2676128' AS DateTime2), 1, CAST(N'2025-10-05T15:44:46.0632653' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T15:41:45.2676863' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (2, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODI2NjR9.rNwew9cKT685OMKhvMwDNykR42Ans3_Z84lycKLuTiA', N'iUqgBnuyVUWmseWh85/OkQ==', N'Bearer', CAST(N'2025-10-05T16:44:56.6935219' AS DateTime2), CAST(N'2025-10-12T15:44:56.6935255' AS DateTime2), 1, CAST(N'2025-10-05T15:46:54.7544827' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T15:44:56.6935265' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (3, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODI4MDh9.n7ssh1M6q2VqDZA1Fhp7yzO-Q4RfzhyhxNbDx5YhQ1Y', N'IrjT7IGf8Ua/GX9c7TXWQw==', N'Bearer', CAST(N'2025-10-05T16:46:54.7632299' AS DateTime2), CAST(N'2025-10-12T15:46:54.7632315' AS DateTime2), 1, CAST(N'2025-10-05T15:53:00.3473341' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T15:46:54.7632321' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (4, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODMxNzR9.A_WuwXwaIWbGDaNpjxuxYacKq2pf007KPk208yE-SJc', N'jvgHqV9IZ0ufwu8OhhU3xg==', N'Bearer', CAST(N'2025-10-05T16:53:00.4781635' AS DateTime2), CAST(N'2025-10-12T15:53:00.4782760' AS DateTime2), 1, CAST(N'2025-10-05T16:03:58.0205077' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T15:53:00.4783374' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (5, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODM4MzN9.OeRanNyWLG1eb8N_vgeV1rhtnpOC3WoHccElU2Vrk_A', N'/dwGOMv41U6DqM5BXW26vQ==', N'Bearer', CAST(N'2025-10-05T17:03:58.1607463' AS DateTime2), CAST(N'2025-10-12T16:03:58.1608535' AS DateTime2), 1, CAST(N'2025-10-05T16:19:34.3649691' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:03:58.1609092' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (6, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODQ3NjZ9.WTrf3gfJYVr5MGZgQhQNEsEGteFFAMRD5Y5rq50IcbE', N'6jt7Gl4DwkKKauCTmX2iVw==', N'Bearer', CAST(N'2025-10-05T17:19:34.5328239' AS DateTime2), CAST(N'2025-10-12T16:19:34.5330159' AS DateTime2), 1, CAST(N'2025-10-05T16:27:39.4440536' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:19:34.5331046' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (7, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODUyNTR9.6xjU6zc5iVmyHkt9d_Kx3EZGrzmnc4ZiURhW1zoZvHg', N'9P1kvQ4U5UyhyYTlznsqYQ==', N'Bearer', CAST(N'2025-10-05T17:27:39.5689443' AS DateTime2), CAST(N'2025-10-12T16:27:39.5691810' AS DateTime2), 1, CAST(N'2025-10-05T16:33:41.1480281' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:27:39.5692740' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (8, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODU2MTZ9.fWJoU8M2njkZkr6SK29hL6PFOK0SoABU9NTJMpbHQkI', N'yigZMH8bB0Gb6IPx3ChAdw==', N'Bearer', CAST(N'2025-10-05T17:33:41.3088922' AS DateTime2), CAST(N'2025-10-12T16:33:41.3090278' AS DateTime2), 1, CAST(N'2025-10-05T16:39:03.0980941' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:33:41.3091131' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (9, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODU5Mzh9.zVphqEfqzEAkN-Bm-b75Yrky_RBmGeM5Enlx_huiimw', N's6BCq45ZsUK/dCUNjubQ3g==', N'Bearer', CAST(N'2025-10-05T17:39:03.2197351' AS DateTime2), CAST(N'2025-10-12T16:39:03.2198324' AS DateTime2), 1, CAST(N'2025-10-05T16:42:33.2623510' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:39:03.2198768' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (10, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODYxNDd9.b2Sj8mEj-I6_XCslSyxkiiRmZhYzs0D3m8tc4PMscIE', N'BXig/+BIXUG2w0dIh/qegg==', N'Bearer', CAST(N'2025-10-05T17:42:33.3823904' AS DateTime2), CAST(N'2025-10-12T16:42:33.3824783' AS DateTime2), 1, CAST(N'2025-10-05T16:44:03.3597582' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:42:33.3825285' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (11, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODYyMzh9.veHK7zes-uyibtl9jfmYW50rh05J5sn8qPkfD9xJ8Ds', N'Xc6jlvOPX0yp5g4XUq67rQ==', N'Bearer', CAST(N'2025-10-05T17:44:03.5056786' AS DateTime2), CAST(N'2025-10-12T16:44:03.5057825' AS DateTime2), 1, CAST(N'2025-10-05T16:46:00.5655161' AS DateTime2), NULL, NULL, CAST(N'2025-10-05T16:44:03.5058437' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+INSERT [PG].[UserToken] ([UserTokenId], [UserId], [AccessToken], [RefreshToken], [TokenType], [ExpiresAt], [RefreshTokenExpiresAt], [IsRevoked], [RevokedAt], [RevokedByIp], [ReplacedByToken], [CreatedAt], [CreatedByIp], [DeviceInfo], [IsActive]) VALUES (12, 11, N'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOlsiY2xpZW50X3dlYl9hcHBfMDAxIiwiY2xpZW50X3dlYl9hcHBfMDAxIl0sImlzcyI6IklkZW50aXR5U2VydmVyIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQVBJIiwiSWRlbnRpdHlTZXJ2ZXJBUEkiXSwic3ViIjoiYWRtaW5Ac3VucmlzZXBnLmNvbSIsInVzZXJfaWQiOiJhZG1pbkBzdW5yaXNlcGcuY29tIiwic2NvcGUiOiJwYXlpbmdndWVzdF9hcGkiLCJleHAiOjE3NTk2ODYzNTZ9.FcmuBDA-BiWwWRFXvKSBufuBVHqmaoPwJ1Bfdffl3u0', N'0UVj2wZxKUKlM/g4Eqyylw==', N'Bearer', CAST(N'2025-10-05T17:46:00.6882113' AS DateTime2), CAST(N'2025-10-12T16:46:00.6883404' AS DateTime2), 0, NULL, NULL, NULL, CAST(N'2025-10-05T16:46:00.6883956' AS DateTime2), N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', 1)
+SET IDENTITY_INSERT [PG].[UserToken] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UK_Bed_RoomBed]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Bed] ADD  CONSTRAINT [UK_Bed_RoomBed] UNIQUE NONCLUSTERED 
+(
+	[RoomId] ASC,
+	[BedNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Booking__AAC320BFBB7594B6]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Booking] ADD UNIQUE NONCLUSTERED 
+(
+	[BookingNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UK_Floor_PropertyFloor]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Floor] ADD  CONSTRAINT [UK_Floor_PropertyFloor] UNIQUE NONCLUSTERED 
+(
+	[PropertyId] ASC,
+	[FloorNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Payment__E2C1723B6F81B5D3]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Payment] ADD UNIQUE NONCLUSTERED 
+(
+	[PaymentNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Property__9CF1543A3851F65E]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Property] ADD UNIQUE NONCLUSTERED 
+(
+	[PropertyCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UK_Setting_PropertyKey]    Script Date: 10/5/2025 9:34:08 PM ******/
+ALTER TABLE [PG].[Setting] ADD  CONSTRAINT [UK_Setting_PropertyKey] UNIQUE NONCLUSTERED 
+(
+	[PropertyId] ASC,
+	[SettingKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [PG].[AuditLog] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Bed] ADD  DEFAULT ('Single') FOR [BedType]
+GO
+ALTER TABLE [PG].[Bed] ADD  DEFAULT ('Available') FOR [Status]
+GO
+ALTER TABLE [PG].[Bed] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Bed] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Booking] ADD  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [PG].[Booking] ADD  DEFAULT ('Monthly') FOR [BookingType]
+GO
+ALTER TABLE [PG].[Booking] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Booking] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[ClientToken] ADD  DEFAULT ('Bearer') FOR [TokenType]
+GO
+ALTER TABLE [PG].[ClientToken] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[ClientToken] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Document] ADD  DEFAULT (getutcdate()) FOR [UploadedDate]
+GO
+ALTER TABLE [PG].[Document] ADD  DEFAULT ((0)) FOR [IsVerified]
+GO
+ALTER TABLE [PG].[Document] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Floor] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Floor] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Maintenance] ADD  DEFAULT ('Medium') FOR [Priority]
+GO
+ALTER TABLE [PG].[Maintenance] ADD  DEFAULT ('Open') FOR [Status]
+GO
+ALTER TABLE [PG].[Maintenance] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Maintenance] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Menu] ADD  DEFAULT ((0)) FOR [DisplayOrder]
+GO
+ALTER TABLE [PG].[Menu] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Menu] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Notification] ADD  DEFAULT ('Pending') FOR [Status]
+GO
+ALTER TABLE [PG].[Notification] ADD  DEFAULT ('Normal') FOR [Priority]
+GO
+ALTER TABLE [PG].[Notification] ADD  DEFAULT ((0)) FOR [RetryCount]
+GO
+ALTER TABLE [PG].[Notification] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Notification] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Payment] ADD  DEFAULT (getutcdate()) FOR [PaymentDate]
+GO
+ALTER TABLE [PG].[Payment] ADD  DEFAULT ('Pending') FOR [Status]
+GO
+ALTER TABLE [PG].[Payment] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Payment] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Property] ADD  DEFAULT ((1)) FOR [TotalFloors]
+GO
+ALTER TABLE [PG].[Property] ADD  DEFAULT ((100)) FOR [TotalRooms]
+GO
+ALTER TABLE [PG].[Property] ADD  DEFAULT ('PayingGuest') FOR [PropertyType]
+GO
+ALTER TABLE [PG].[Property] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Property] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Role] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Role] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT ((0)) FOR [CanView]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT ((0)) FOR [CanCreate]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT ((0)) FOR [CanEdit]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT ((0)) FOR [CanDelete]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[RoleMenuPermission] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Room] ADD  DEFAULT ('Standard') FOR [RoomType]
+GO
+ALTER TABLE [PG].[Room] ADD  DEFAULT ((5)) FOR [TotalBeds]
+GO
+ALTER TABLE [PG].[Room] ADD  DEFAULT ((0)) FOR [SecurityDeposit]
+GO
+ALTER TABLE [PG].[Room] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Room] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[Setting] ADD  DEFAULT ('String') FOR [SettingType]
+GO
+ALTER TABLE [PG].[Setting] ADD  DEFAULT ((0)) FOR [IsEncrypted]
+GO
+ALTER TABLE [PG].[Setting] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Setting] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[User] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[User] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[UserRole] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[UserRole] ADD  DEFAULT (getutcdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [PG].[UserToken] ADD  DEFAULT ('Bearer') FOR [TokenType]
+GO
+ALTER TABLE [PG].[UserToken] ADD  DEFAULT ((0)) FOR [IsRevoked]
+GO
+ALTER TABLE [PG].[UserToken] ADD  DEFAULT (getutcdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [PG].[UserToken] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [PG].[Bed]  WITH CHECK ADD  CONSTRAINT [FK_Bed_Room] FOREIGN KEY([RoomId])
+REFERENCES [PG].[Room] ([RoomId])
+GO
+ALTER TABLE [PG].[Bed] CHECK CONSTRAINT [FK_Bed_Room]
+GO
+ALTER TABLE [PG].[Booking]  WITH CHECK ADD  CONSTRAINT [FK_Booking_Bed] FOREIGN KEY([BedId])
+REFERENCES [PG].[Bed] ([BedId])
+GO
+ALTER TABLE [PG].[Booking] CHECK CONSTRAINT [FK_Booking_Bed]
+GO
+ALTER TABLE [PG].[Booking]  WITH CHECK ADD  CONSTRAINT [FK_Booking_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[Booking] CHECK CONSTRAINT [FK_Booking_Property]
+GO
+ALTER TABLE [PG].[Booking]  WITH CHECK ADD  CONSTRAINT [FK_Booking_User] FOREIGN KEY([UserId])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[Booking] CHECK CONSTRAINT [FK_Booking_User]
+GO
+ALTER TABLE [PG].[Document]  WITH CHECK ADD  CONSTRAINT [FK_Document_User] FOREIGN KEY([UserId])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[Document] CHECK CONSTRAINT [FK_Document_User]
+GO
+ALTER TABLE [PG].[Floor]  WITH CHECK ADD  CONSTRAINT [FK_Floor_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[Floor] CHECK CONSTRAINT [FK_Floor_Property]
+GO
+ALTER TABLE [PG].[Maintenance]  WITH CHECK ADD  CONSTRAINT [FK_Maintenance_AssignedTo] FOREIGN KEY([AssignedTo])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[Maintenance] CHECK CONSTRAINT [FK_Maintenance_AssignedTo]
+GO
+ALTER TABLE [PG].[Maintenance]  WITH CHECK ADD  CONSTRAINT [FK_Maintenance_Bed] FOREIGN KEY([BedId])
+REFERENCES [PG].[Bed] ([BedId])
+GO
+ALTER TABLE [PG].[Maintenance] CHECK CONSTRAINT [FK_Maintenance_Bed]
+GO
+ALTER TABLE [PG].[Maintenance]  WITH CHECK ADD  CONSTRAINT [FK_Maintenance_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[Maintenance] CHECK CONSTRAINT [FK_Maintenance_Property]
+GO
+ALTER TABLE [PG].[Maintenance]  WITH CHECK ADD  CONSTRAINT [FK_Maintenance_ReportedBy] FOREIGN KEY([ReportedBy])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[Maintenance] CHECK CONSTRAINT [FK_Maintenance_ReportedBy]
+GO
+ALTER TABLE [PG].[Maintenance]  WITH CHECK ADD  CONSTRAINT [FK_Maintenance_Room] FOREIGN KEY([RoomId])
+REFERENCES [PG].[Room] ([RoomId])
+GO
+ALTER TABLE [PG].[Maintenance] CHECK CONSTRAINT [FK_Maintenance_Room]
+GO
+ALTER TABLE [PG].[Menu]  WITH CHECK ADD  CONSTRAINT [FK_Menu_ParentMenu] FOREIGN KEY([ParentMenuId])
+REFERENCES [PG].[Menu] ([MenuId])
+GO
+ALTER TABLE [PG].[Menu] CHECK CONSTRAINT [FK_Menu_ParentMenu]
+GO
+ALTER TABLE [PG].[Notification]  WITH CHECK ADD  CONSTRAINT [FK_Notification_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[Notification] CHECK CONSTRAINT [FK_Notification_Property]
+GO
+ALTER TABLE [PG].[Notification]  WITH CHECK ADD  CONSTRAINT [FK_Notification_User] FOREIGN KEY([UserId])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[Notification] CHECK CONSTRAINT [FK_Notification_User]
+GO
+ALTER TABLE [PG].[Payment]  WITH CHECK ADD  CONSTRAINT [FK_Payment_Booking] FOREIGN KEY([BookingId])
+REFERENCES [PG].[Booking] ([BookingId])
+GO
+ALTER TABLE [PG].[Payment] CHECK CONSTRAINT [FK_Payment_Booking]
+GO
+ALTER TABLE [PG].[RoleMenuPermission]  WITH CHECK ADD  CONSTRAINT [FK_RoleMenuPermission_Menu] FOREIGN KEY([MenuId])
+REFERENCES [PG].[Menu] ([MenuId])
+GO
+ALTER TABLE [PG].[RoleMenuPermission] CHECK CONSTRAINT [FK_RoleMenuPermission_Menu]
+GO
+ALTER TABLE [PG].[RoleMenuPermission]  WITH CHECK ADD  CONSTRAINT [FK_RoleMenuPermission_Role] FOREIGN KEY([RoleId])
+REFERENCES [PG].[Role] ([RoleId])
+GO
+ALTER TABLE [PG].[RoleMenuPermission] CHECK CONSTRAINT [FK_RoleMenuPermission_Role]
+GO
+ALTER TABLE [PG].[Room]  WITH CHECK ADD  CONSTRAINT [FK_Room_Floor] FOREIGN KEY([FloorId])
+REFERENCES [PG].[Floor] ([FloorId])
+GO
+ALTER TABLE [PG].[Room] CHECK CONSTRAINT [FK_Room_Floor]
+GO
+ALTER TABLE [PG].[Setting]  WITH CHECK ADD  CONSTRAINT [FK_Setting_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[Setting] CHECK CONSTRAINT [FK_Setting_Property]
+GO
+ALTER TABLE [PG].[User]  WITH CHECK ADD  CONSTRAINT [FK_User_Property] FOREIGN KEY([PropertyId])
+REFERENCES [PG].[Property] ([PropertyId])
+GO
+ALTER TABLE [PG].[User] CHECK CONSTRAINT [FK_User_Property]
+GO
+ALTER TABLE [PG].[UserRole]  WITH CHECK ADD  CONSTRAINT [FK_UserRole_Role] FOREIGN KEY([RoleId])
+REFERENCES [PG].[Role] ([RoleId])
+GO
+ALTER TABLE [PG].[UserRole] CHECK CONSTRAINT [FK_UserRole_Role]
+GO
+ALTER TABLE [PG].[UserRole]  WITH CHECK ADD  CONSTRAINT [FK_UserRole_User] FOREIGN KEY([UserId])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[UserRole] CHECK CONSTRAINT [FK_UserRole_User]
+GO
+ALTER TABLE [PG].[UserToken]  WITH CHECK ADD  CONSTRAINT [FK_UserToken_User] FOREIGN KEY([UserId])
+REFERENCES [PG].[User] ([UserId])
+GO
+ALTER TABLE [PG].[UserToken] CHECK CONSTRAINT [FK_UserToken_User]
+GO
