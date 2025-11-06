@@ -44,7 +44,7 @@ namespace PayingGuest.Tests.Unit
             var registerDto = new RegisterUserDto
             {
                 PropertyId = 1,
-                UserType = "Guest",
+               // UserType = "Guest",
                 FirstName = "John",
                 LastName = "Doe",
                 EmailAddress = "john.doe@test.com",
@@ -112,7 +112,7 @@ namespace PayingGuest.Tests.Unit
             var registerDto = new RegisterUserDto
             {
                 PropertyId = 1,
-                UserType = "Guest",
+                //UserType = "Guest",
                 FirstName = "John",
                 LastName = "Doe",
                 EmailAddress = "existing@test.com",
@@ -140,7 +140,7 @@ namespace PayingGuest.Tests.Unit
             var registerDto = new RegisterUserDto
             {
                 PropertyId = 999,
-                UserType = "Guest",
+                //UserType = "Guest",
                 FirstName = "John",
                 LastName = "Doe",
                 EmailAddress = "john.doe@test.com",

@@ -265,7 +265,7 @@ static void ConfigureMiddleware(WebApplication app, IWebHostEnvironment env)
     //app.UseStaticFiles();
 
     // Custom middleware
-    app.UseMiddleware<TokenValidationMiddleware>();
+    //app.UseMiddleware<TokenValidationMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     // Authentication & Authorization

@@ -47,8 +47,9 @@ namespace PayingGuest.Api.Controllers
         /// <summary>
         /// Register a new user
         /// </summary>
-        [HttpPost("register")]
+        /// 
         [AllowAnonymous]
+        [HttpPost("register")]        
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto request)
@@ -72,8 +73,9 @@ namespace PayingGuest.Api.Controllers
         /// <summary>
         /// Login user
         /// </summary>
-        [HttpPost("login")]
+        /// 
         [AllowAnonymous]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(ApiResponse<LoginResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
