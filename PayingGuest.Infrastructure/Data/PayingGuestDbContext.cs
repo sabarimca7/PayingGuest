@@ -18,6 +18,7 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
+        public DbSet<Booking> Bookings => Set<Booking>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -165,6 +166,107 @@ namespace PayingGuest.Infrastructure.Data
                 entity.Ignore(e => e.LastModifiedDate);
 
             });
+
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.ToTable("Booking", "PG");
+
+                entity.HasKey(e => e.BookingId);
+
+                entity.Property(e => e.BookingId)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.BookingNumber)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.PropertyId)
+                      .IsRequired();
+
+                entity.Property(e => e.UserId)
+                      .IsRequired();
+
+                entity.Property(e => e.BedId)
+                      .IsRequired();
+
+                entity.Property(e => e.CheckInDate)
+                      .HasColumnType("date")
+                      .IsRequired();
+
+                entity.Property(e => e.CheckOutDate)
+                      .HasColumnType("date");
+
+                entity.Property(e => e.PlannedCheckOutDate)
+                      .HasColumnType("date")
+                      .IsRequired();
+
+                entity.Property(e => e.MonthlyRent)
+                      .HasColumnType("decimal(10,2)")
+                      .IsRequired();
+
+                entity.Property(e => e.SecurityDeposit)
+                      .HasColumnType("decimal(10,2)")
+                      .IsRequired();
+
+                entity.Property(e => e.Status)
+                      .IsRequired()
+                      .HasMaxLength(20);
+
+                entity.Property(e => e.BookingType)
+                      .IsRequired()
+                      .HasMaxLength(20);
+
+                entity.Property(e => e.SpecialRequests)
+                      .HasMaxLength(1000);
+
+                entity.Property(e => e.IsActive)
+                      .IsRequired()
+                      .HasDefaultValue(true);
+
+                entity.Property(e => e.CreatedDate)
+                      .HasColumnType("datetime2(7)")
+                      .IsRequired()
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.LastModifiedDate)
+                      .HasColumnType("datetime2(7)");
+
+                entity.Property(e => e.LastModifiedBy)
+                      .HasMaxLength(100);
+
+                // Foreign Keys (Safe Delete – No Cascade)
+                entity.HasOne<Property>()
+                      .WithMany()
+                      .HasForeignKey(e => e.PropertyId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                //entity.HasOne<Bed>()
+                //      .WithMany()
+                //      .HasForeignKey(e => e.BedId)
+                //      .OnDelete(DeleteBehavior.Restrict);
+
+                // Indexes
+                entity.HasIndex(e => e.BookingNumber)
+                      .IsUnique();
+
+                entity.HasIndex(e => e.PropertyId);
+
+                entity.HasIndex(e => e.UserId);
+
+                entity.HasIndex(e => e.BedId);
+
+                entity.HasIndex(e => e.Status);
+            });
+
+            //modelBuilder.ApplyConfiguration(new BookingConfiguration());
 
             // ROLE MENU PERMISSION
             modelBuilder.Entity<RoleMenuPermission>(entity =>

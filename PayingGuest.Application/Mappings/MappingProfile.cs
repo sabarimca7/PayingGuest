@@ -94,6 +94,8 @@ namespace PayingGuest.Application.Mappings
                 .ForMember(dest => dest.Role, opt => opt.Ignore())
                 .ForMember(dest => dest.Menu, opt => opt.Ignore());
 
+            CreateMap<Booking, BookingDto>().ReverseMap();
+
         }
     }
 }

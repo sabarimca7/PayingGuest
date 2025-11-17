@@ -13,6 +13,7 @@ namespace PayingGuest.Infrastructure.Repositories
         private IDbContextTransaction? _transaction;
         private IUserRepository? _users;
         private IRepository<Property>? _properties;
+        private IRepository<Booking>? _bookings;
         private IRepository<AuditLog>? _auditLogs;
         private IRepository<ClientToken>? _clientTokens;
         public IMenuRepository _menus;
@@ -28,6 +29,7 @@ namespace PayingGuest.Infrastructure.Repositories
         public IUserRoleRepository UserRoles => _userRoles ??= new UserRoleRepository(_context);
         public IUserTokenRepository UserTokens => _userTokens ??= new UserTokenRepository(_context);
         public IRepository<Property> Properties => _properties ??= new Repository<Property>(_context);
+        public IRepository<Booking> Bookings => _bookings ??= new Repository<Booking>(_context);
         public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
         public IRepository<ClientToken> ClientTokens => _clientTokens ??= new Repository<ClientToken>(_context);
 

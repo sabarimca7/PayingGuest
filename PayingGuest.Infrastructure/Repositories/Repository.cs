@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PayingGuest.Domain.Interfaces;
 using PayingGuest.Infrastructure.Data;
@@ -28,6 +24,11 @@ namespace PayingGuest.Infrastructure.Repositories
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public virtual IQueryable<T> AsQueryable()
+        {
+            return _dbSet.AsQueryable();
         }
 
         public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
@@ -64,6 +65,10 @@ namespace PayingGuest.Infrastructure.Repositories
         public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.AnyAsync(predicate);
+        }
+        public virtual async Task<int> CountAsync()
+        {
+            return await _dbSet.CountAsync();
         }
     }
 }

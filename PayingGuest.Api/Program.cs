@@ -176,7 +176,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
         options.AddPolicy("PayingGuestCorsPolicy",
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000", "https://localhost:3001", "http://localhost:5000")
+                policy.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost:5000")
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
