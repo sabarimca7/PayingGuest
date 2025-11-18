@@ -1,20 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PayingGuest.Application;
 using PayingGuest.Application.Interfaces;
 using PayingGuest.Domain.Entities;
 using PayingGuest.Domain.Interfaces;
 using PayingGuest.Infrastructure.Data;
 using PayingGuest.Infrastructure.Repositories;
 using PayingGuest.Infrastructure.Services;
-using Polly;
-using Polly.Extensions.Http;
-using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 
 
 namespace PayingGuest.Infrastructure

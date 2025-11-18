@@ -42,7 +42,7 @@ namespace PayingGuest.Application.Commands.Auth.Refresh
 
                 return ApiResponse<TokenResponse>.SuccessResponse(newToken, "Token refreshed successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                // _logger.LogError(ex, "Error refreshing token");
                 return ApiResponse<TokenResponse>.ErrorResponse("Failed to refresh token");

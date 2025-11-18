@@ -22,6 +22,7 @@ namespace PayingGuest.Infrastructure.Services
         private readonly ITokenCacheService _tokenCache;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<IdentityService> _logger;
+
         private readonly string _identityServerUrl;
         private readonly string _clientId;
         private readonly string _clientSecret;
@@ -39,11 +40,19 @@ namespace PayingGuest.Infrastructure.Services
             _unitOfWork = unitOfWork;
             _logger = logger;
 
-            _identityServerUrl = configuration["IdentityServer:BaseUrl"] ?? throw new ArgumentNullException("IdentityServer:BaseUrl");
-            _clientId = configuration["IdentityServer:ClientId"] ?? throw new ArgumentNullException("IdentityServer:ClientId");
-            _clientSecret = configuration["IdentityServer:ClientSecret"] ?? throw new ArgumentNullException("IdentityServer:ClientSecret");
+            _identityServerUrl = configuration["IdentityServer:BaseUrl"]
+                ?? throw new ArgumentNullException("IdentityServer:BaseUrl");
+
+            _clientId = configuration["IdentityServer:ClientId"]
+                ?? throw new ArgumentNullException("IdentityServer:ClientId");
+
+            _clientSecret = configuration["IdentityServer:ClientSecret"]
+                ?? throw new ArgumentNullException("IdentityServer:ClientSecret");
         }
 
+        // ======================================================
+        // 1. GET CLIENT TOKEN
+        // ======================================================
         public async Task<TokenResponse> GetClientTokenAsync()
         {
             try
@@ -53,40 +62,26 @@ namespace PayingGuest.Infrastructure.Services
                     ClientId = _clientId,
                     ClientSecret = _clientSecret,
                     GrantType = "client_credentials",
-                    Scope = "read write",
-                    Username = "",
-                    Password = "",
-                    Code = "",
-                    RedirectUri = "",
-                    RefreshToken = ""
+                    Scope = "read write"
                 };
 
-                var json = JsonSerializer.Serialize(request);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                //Console.WriteLine(json);
-
-                var response = await _httpClient.PostAsJsonAsync($"{_identityServerUrl}/api/Token/token", request);
+                var response = await _httpClient.PostAsJsonAsync(
+                    $"{_identityServerUrl}/api/Token/token", request);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var error = await response.Content.ReadAsStringAsync();
-                    _logger.LogError("Failed to get token: {Error}", error);
+                    var err = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Failed to get client token: {Error}", err);
                     throw new TokenException($"Failed to get token: {response.StatusCode}");
                 }
 
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var json = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(
+                    json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? throw new TokenException("Invalid token response");
 
-                if (tokenResponse == null)
-                {
-                    throw new TokenException("Invalid token response");
-                }
-
-                // Store token in cache
                 await _tokenCache.SetTokenAsync(_clientId, tokenResponse);
-
-                // Store token in database
                 await StoreTokenInDatabase(tokenResponse);
 
                 return tokenResponse;
@@ -94,19 +89,26 @@ namespace PayingGuest.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting client token");
-                throw new TokenException($"Failed to obtain access token:{ex}");
+                throw new TokenException($"Failed to obtain access token: {ex.Message}");
             }
         }
 
+        // ======================================================
+        // 2. VALIDATE TOKEN
+        // ======================================================
         public async Task<TokenValidationResponse> ValidateTokenAsync(string token)
         {
             try
             {
-                var request = new TokenValidationRequest { Token = token };
-                var json = JsonSerializer.Serialize(request);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var body = new TokenValidationRequest { Token = token };
+                var content = new StringContent(
+                    JsonSerializer.Serialize(body),
+                    Encoding.UTF8,
+                    "application/json");
 
-                var response = await _httpClient.PostAsync($"{_identityServerUrl}/api/Token/validate", content);
+                var response = await _httpClient.PostAsync(
+                    $"{_identityServerUrl}/api/Token/validate",
+                    content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -117,11 +119,12 @@ namespace PayingGuest.Infrastructure.Services
                     };
                 }
 
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var validationResponse = JsonSerializer.Deserialize<TokenValidationResponse>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var json = await response.Content.ReadAsStringAsync();
 
-                return validationResponse ?? new TokenValidationResponse { Valid = false };
+                return JsonSerializer.Deserialize<TokenValidationResponse>(
+                    json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new TokenValidationResponse { Valid = false };
             }
             catch (Exception ex)
             {
@@ -136,69 +139,79 @@ namespace PayingGuest.Infrastructure.Services
 
         public async Task<bool> IsTokenValidAsync(string token)
         {
-            var validationResponse = await ValidateTokenAsync(token);
-            return validationResponse.Valid;
+            var result = await ValidateTokenAsync(token);
+            return result?.Valid ?? false;
         }
 
+        // ======================================================
+        // 3. GET OR REFRESH TOKEN
+        // ======================================================
         public async Task<string> GetOrRefreshTokenAsync()
         {
-            // Check cache first
-            var cachedToken = await _tokenCache.GetTokenAsync(_clientId);
+            var cached = await _tokenCache.GetTokenAsync(_clientId);
 
-            if (cachedToken != null && !await _tokenCache.IsTokenExpiredAsync(_clientId))
+            if (cached != null && !await _tokenCache.IsTokenExpiredAsync(_clientId))
             {
-                return cachedToken.AccessToken;
+                return cached.AccessToken ?? "";
             }
 
-            // Get new token
-            var tokenResponse = await GetClientTokenAsync();
-            return tokenResponse.AccessToken;
+            var newToken = await GetClientTokenAsync();
+            return newToken.AccessToken ?? "";
         }
 
-        private async Task StoreTokenInDatabase(TokenResponse tokenResponse)
+
+        // ======================================================
+        // 4. STORE TOKEN IN DATABASE
+        // ======================================================
+        private async Task StoreTokenInDatabase(TokenResponse token)
         {
             try
             {
-                // Deactivate old tokens
-                var existingTokens = await _unitOfWork.ClientTokens.FindAsync(t => t.ClientId == _clientId && t.IsActive);
-                foreach (var token in existingTokens)
+                var oldTokens = await _unitOfWork.ClientTokens
+                    .FindAsync(t => t.ClientId == _clientId && t.IsActive);
+
+                foreach (var t in oldTokens)
                 {
-                    token.IsActive = false;
-                    await _unitOfWork.ClientTokens.UpdateAsync(token);
+                    t.IsActive = false;
+                    await _unitOfWork.ClientTokens.UpdateAsync(t);
                 }
 
-                // Store new token
-                var clientToken = new ClientToken
+                var entity = new ClientToken
                 {
                     ClientId = _clientId,
-                    AccessToken = tokenResponse.AccessToken,
-                    TokenType = tokenResponse.TokenType,
-                    ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
-                    RefreshToken = tokenResponse.RefreshToken,
-                    Scope = tokenResponse.Scope,
+                    AccessToken = token.AccessToken,
+                    TokenType = token.TokenType,
+                    ExpiresAt = DateTime.UtcNow.AddSeconds(token.ExpiresIn),
+                    RefreshToken = token.RefreshToken,
+                    Scope = token.Scope,
                     CreatedDate = DateTime.UtcNow,
                     IsActive = true
                 };
 
-                await _unitOfWork.ClientTokens.AddAsync(clientToken);
+                await _unitOfWork.ClientTokens.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error storing token in database");
+                _logger.LogError(ex, "Failed to store token in database");
             }
         }
 
+        // ======================================================
+        // 5. CREATE USER (calls Identity Server)
+        // ======================================================
         public async Task<int> CreateUserAsync(string username, string password, string firstName, string lastName)
         {
             try
             {
-                // Get client token first
-                var tokenResponse = await GetClientTokenAsync();
-                if (string.IsNullOrEmpty(tokenResponse?.AccessToken))
-                {
+                var token = await GetClientTokenAsync();
+
+                if (string.IsNullOrWhiteSpace(token.AccessToken))
                     throw new TokenException("Failed to obtain client token");
-                }
+
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
+
                 var request = new CreateUserDto
                 {
                     Username = username,
@@ -207,33 +220,32 @@ namespace PayingGuest.Infrastructure.Services
                     Lastname = lastName
                 };
 
-                _httpClient.DefaultRequestHeaders.Authorization =
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
-
-                var response = await _httpClient.PostAsJsonAsync($"{_identityServerUrl}/api/User", request);
+                var response = await _httpClient.PostAsJsonAsync(
+                    $"{_identityServerUrl}/api/User",
+                    request);
 
                 if (!response.IsSuccessStatusCode)
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    throw new TokenException($"Failed to get user: {response.StatusCode}");
-                }
+                    throw new TokenException($"Failed to create user: {response.StatusCode}");
 
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var userResponse = JsonSerializer.Deserialize<ApiResponse<UserDto>>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var json = await response.Content.ReadAsStringAsync();
+                var userResponse = JsonSerializer.Deserialize<ApiResponse<UserDto>>(
+                    json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? throw new TokenException("Invalid user response");
 
-                if (userResponse == null)
-                {
-                    throw new TokenException("Invalid user response");
-                }
-                return userResponse.Data.UserId;
+                return userResponse.Data?.UserId
+                    ?? throw new TokenException("User ID missing in response");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting client token");
-                throw new TokenException($"Failed to obtain access token:{ex}");
+                _logger.LogError(ex, "Error creating user");
+                throw new TokenException($"Failed to create user: {ex.Message}");
             }
         }
+
+        // ======================================================
+        // 6. VALIDATE CREDENTIALS
+        // ======================================================
         public async Task<TokenResponse?> ValidateCredentialsAsync(string username, string password)
         {
             try
@@ -245,107 +257,83 @@ namespace PayingGuest.Infrastructure.Services
                     GrantType = "password",
                     Scope = "read write",
                     Username = username,
-                    Password = password,
-                    Code = "",
-                    RedirectUri = "",
-                    RefreshToken = ""
+                    Password = password
                 };
 
-                var json = JsonSerializer.Serialize(request);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                //Console.WriteLine(json);
-
-                var response = await _httpClient.PostAsJsonAsync($"{_identityServerUrl}/api/Token/token", request);
+                var response = await _httpClient.PostAsJsonAsync(
+                    $"{_identityServerUrl}/api/Token/token",
+                    request);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var error = await response.Content.ReadAsStringAsync();
-                    throw new TokenException($"Failed to get user: {response.StatusCode}");
-                }
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var userResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if (userResponse == null)
-                {
-                    throw new TokenException("Invalid user response");
-                }
-                return userResponse;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting client token");
-                throw new TokenException($"Failed to obtain access token:{ex}");
-            }
-        }
-
-        public async Task<TokenResponse?> RefreshTokenAsync(string refreshToken)
-        {
-            try
-            {
-                var refreshTokenEndpoint = $"{_identityServerUrl}/api/Token/refresh";
-
-                var requestBody = new Dictionary<string, string>
-                                    {
-                                        { "grant_type", "refresh_token" },
-                                        { "client_id", _clientId! },
-                                        { "client_secret", _clientSecret! },
-                                        { "refresh_token", refreshToken }
-                                    };
-
-                var request = new HttpRequestMessage(HttpMethod.Post, refreshTokenEndpoint)
-                {
-                    Content = new FormUrlEncodedContent(requestBody)
-                };
-
-                var response = await _httpClient.SendAsync(request);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
                     return null;
                 }
 
-                var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
-                return tokenResponse;
+                return await response.Content.ReadFromJsonAsync<TokenResponse>();
             }
             catch (Exception ex)
             {
-                // Log exception if you have logging configured
+                _logger.LogError(ex, "Error validating credentials");
                 return null;
             }
         }
 
+        // ======================================================
+        // 7. REFRESH TOKEN
+        // ======================================================
+        public async Task<TokenResponse?> RefreshTokenAsync(string refreshToken)
+        {
+            try
+            {
+                var url = $"{_identityServerUrl}/api/Token/refresh";
+
+                var dict = new Dictionary<string, string>
+                {
+                    { "grant_type", "refresh_token" },
+                    { "client_id", _clientId },
+                    { "client_secret", _clientSecret },
+                    { "refresh_token", refreshToken }
+                };
+
+                var response = await _httpClient.PostAsync(
+                    url,
+                    new FormUrlEncodedContent(dict));
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                return await response.Content.ReadFromJsonAsync<TokenResponse>();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // ======================================================
+        // 8. REVOKE TOKEN
+        // ======================================================
         public async Task<bool> RevokeTokenAsync(string token)
         {
             try
             {
-                var revocationEndpoint = $"{_identityServerUrl}/api/Token/revoke";
+                var url = $"{_identityServerUrl}/api/Token/revoke";
 
-                if (string.IsNullOrEmpty(revocationEndpoint))
+                var dict = new Dictionary<string, string>
                 {
-                    return true;
-                }
-
-                            var requestBody = new Dictionary<string, string>
-                        {
-                            { "token", token },
-                            { "client_id", _clientSecret! },
-                            { "client_secret", _clientSecret! },
-                            { "token_type_hint", "refresh_token" }
-                        };
-
-                var request = new HttpRequestMessage(HttpMethod.Post, revocationEndpoint)
-                {
-                    Content = new FormUrlEncodedContent(requestBody)
+                    { "token", token },
+                    { "client_id", _clientId },      // FIXED (was wrong before)
+                    { "client_secret", _clientSecret },
+                    { "token_type_hint", "refresh_token" }
                 };
 
-                var response = await _httpClient.SendAsync(request);
+                var response = await _httpClient.PostAsync(
+                    url,
+                    new FormUrlEncodedContent(dict));
 
                 return response.IsSuccessStatusCode;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }

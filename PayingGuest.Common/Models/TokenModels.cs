@@ -48,7 +48,7 @@ namespace PayingGuest.Common.Models
     {
         public bool IsValid { get; set; }
         public int UserId { get; set; }
-        public string AccessToken { get; set; } = string.Empty;
+        public string? AccessToken { get; set; } 
         public int ExpiresIn { get; set; }
         public string TokenType { get; set; } = string.Empty;
         public string? RefreshToken { get; set; }

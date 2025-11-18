@@ -16,9 +16,11 @@ namespace PayingGuest.Infrastructure.Repositories
         private IRepository<Booking>? _bookings;
         private IRepository<AuditLog>? _auditLogs;
         private IRepository<ClientToken>? _clientTokens;
-        public IMenuRepository _menus;
-        public IUserRoleRepository _userRoles;
-        public IUserTokenRepository _userTokens;
+
+        private IMenuRepository? _menus;
+        private IUserRoleRepository? _userRoles;
+        private IUserTokenRepository? _userTokens;
+
         public UnitOfWork(PayingGuestDbContext context)
         {
             _context = context;
@@ -33,15 +35,10 @@ namespace PayingGuest.Infrastructure.Repositories
         public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
         public IRepository<ClientToken> ClientTokens => _clientTokens ??= new Repository<ClientToken>(_context);
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
+        public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 
-        public async Task BeginTransactionAsync()
-        {
+        public async Task BeginTransactionAsync() =>
             _transaction = await _context.Database.BeginTransactionAsync();
-        }
 
         public async Task CommitTransactionAsync()
         {
