@@ -1,6 +1,5 @@
 ﻿
-
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using PayingGuest.Api.Middleware;
 using PayingGuest.Application;
 using PayingGuest.Infrastructure;

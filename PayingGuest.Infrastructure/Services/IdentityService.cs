@@ -226,7 +226,7 @@ namespace PayingGuest.Infrastructure.Services
                 {
                     throw new TokenException("Invalid user response");
                 }
-                return userResponse.Data.UserId;
+                return userResponse.Data.UserId.GetValueOrDefault();
             }
             catch (Exception ex)
             {
