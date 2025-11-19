@@ -13,8 +13,7 @@
             {
                 Success = true,
                 Data = data,
-                Message = message,
-                Errors = new List<string>()  // empty errors list
+                Message = message
             };
         }
 
@@ -23,7 +22,6 @@
             return new ApiResponse<T>
             {
                 Success = false,
-                Data = default,    // ensures no stale data
                 Errors = new List<string> { error }
             };
         }
@@ -33,8 +31,7 @@
             return new ApiResponse<T>
             {
                 Success = false,
-                Data = default,    // avoids accidental leftover data
-                Errors = errors ?? new List<string>()  // safety check
+                Errors = errors
             };
         }
     }

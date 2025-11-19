@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//Menu Service
+
+using Microsoft.EntityFrameworkCore;
 using PayingGuest.Application.DTOs.Menus;
 using PayingGuest.Application.Interfaces;
 using PayingGuest.Infrastructure.Data;
