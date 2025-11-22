@@ -31,6 +31,7 @@ namespace PayingGuest.Api.Controllers
 
             return Ok(result);
         }
+        
 
         // ----------------------------------------------------
         // POST: api/booking
@@ -87,6 +88,7 @@ namespace PayingGuest.Api.Controllers
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(result);
-        }        
+        }
+       
     }
 }

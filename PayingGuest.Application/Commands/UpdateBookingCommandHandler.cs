@@ -29,15 +29,15 @@ namespace PayingGuest.Application.Commands
             if (booking == null) return null;
 
             booking.MonthlyRent = request.MonthlyRent;
-            booking.PlannedCheckOutDate = request.PlannedCheckOutDate;
+          //  booking.PlannedCheckOutDate = request.PlannedCheckOutDate;
             booking.SpecialRequests = request.SpecialRequests;
-            booking.LastModifiedDate = DateTime.UtcNow;
+          //  booking.LastModifiedDate = DateTime.UtcNow;
 
             if (request.CheckOutDate.HasValue)
             {
                 booking.CheckOutDate = request.CheckOutDate.Value;
-                booking.Status = "CheckedOut";
-                booking.IsActive = false;
+               // booking.Status = "CheckedOut";
+               // booking.IsActive = false;
             }
 
             await _context.SaveChangesAsync();

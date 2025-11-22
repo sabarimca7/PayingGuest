@@ -19,6 +19,7 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
         public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<Booking> Bookingz { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -196,9 +197,9 @@ namespace PayingGuest.Infrastructure.Data
                 entity.Property(e => e.CheckOutDate)
                       .HasColumnType("date");
 
-                entity.Property(e => e.PlannedCheckOutDate)
-                      .HasColumnType("date")
-                      .IsRequired();
+                //entity.Property(e => e.PlannedCheckOutDate)
+                //      .HasColumnType("date")
+                //      .IsRequired();
 
                 entity.Property(e => e.MonthlyRent)
                       .HasColumnType("decimal(10,2)")

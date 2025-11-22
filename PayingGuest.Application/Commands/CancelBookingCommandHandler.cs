@@ -24,9 +24,9 @@ namespace PayingGuest.Application.Commands
 
             if (booking == null) return false;
 
-            booking.IsActive = false;
-            booking.Status = "Cancelled";
-            booking.LastModifiedDate = DateTime.UtcNow;
+          //  booking.IsActive = false;
+          //  booking.Status = "Cancelled";
+         //   booking.LastModifiedDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return true;

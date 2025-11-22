@@ -17,8 +17,19 @@ namespace PayingGuest.Application.Validators
             RuleFor(x => x.BedId).GreaterThan(0);
 
             RuleFor(x => x.CheckInDate)
-                .LessThanOrEqualTo(x => x.PlannedCheckOutDate)
-                .WithMessage("Check-in date must be before or equal to planned checkout date.");
+                  .NotEmpty()
+                  .WithMessage("CheckInDate is required.");
+
+
+            RuleFor(x => x.CheckOutDate)
+                           .Must((cmd, checkout) =>
+                           {
+                               if (checkout == null)
+                                   return true; // allow null
+
+                               return checkout >= cmd.CheckInDate;
+                           })
+                           .WithMessage("CheckOutDate must be after CheckInDate.");
 
             RuleFor(x => x.MonthlyRent).GreaterThan(0);
             RuleFor(x => x.SecurityDeposit).GreaterThanOrEqualTo(0);

@@ -12,12 +12,16 @@ namespace PayingGuest.Application.Commands
     {
         public int PropertyId { get; set; }
         public int UserId { get; set; }
+
         public int BedId { get; set; }
         public DateOnly CheckInDate { get; set; }
-        public DateOnly PlannedCheckOutDate { get; set; }
+        public DateOnly CheckOutDate { get; set; }
+
+        // public DateOnly PlannedCheckOutDate { get; set; }
         public decimal MonthlyRent { get; set; }
         public decimal SecurityDeposit { get; set; }
         public string BookingType { get; set; } = "Monthly";
+       public string? Status { get; set; }
         public string? SpecialRequests { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using PayingGuest.Common.Models;
 
 namespace PayingGuest.Api.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

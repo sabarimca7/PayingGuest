@@ -33,15 +33,14 @@ namespace PayingGuest.Application.Commands
                 UserId = request.UserId,
                 BedId = request.BedId,
                 CheckInDate = request.CheckInDate,
-                PlannedCheckOutDate = request.PlannedCheckOutDate,
                 MonthlyRent = request.MonthlyRent,
                 SecurityDeposit = request.SecurityDeposit,
-                Status = "Active",
                 BookingType = request.BookingType,
+                Status = "Booked", // ✅ Correct position and syntax
                 SpecialRequests = request.SpecialRequests,
                 IsActive = true,
                 CreatedDate = DateTime.UtcNow,
-                CreatedBy = "system" // replace with current user
+                CreatedBy = "system"
             };
             await _unitOfWork.Bookings.AddAsync(booking);
             await _unitOfWork.SaveChangesAsync();
