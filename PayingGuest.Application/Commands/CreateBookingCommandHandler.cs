@@ -33,11 +33,13 @@ namespace PayingGuest.Application.Commands
                 UserId = request.UserId,
                 BedId = request.BedId,
                 CheckInDate = request.CheckInDate,
+                CheckOutDate=request.CheckOutDate,
                 MonthlyRent = request.MonthlyRent,
                 SecurityDeposit = request.SecurityDeposit,
                 BookingType = request.BookingType,
                 Status = "Booked", // ✅ Correct position and syntax
                 SpecialRequests = request.SpecialRequests,
+                DurationMonths=request.DurationMonths,
                 IsActive = true,
                 CreatedDate = DateTime.UtcNow,
                 CreatedBy = "system"

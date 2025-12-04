@@ -10,11 +10,12 @@ namespace PayingGuest.Common.Models
     {
         public class Booking
         {
-            public int BookingId { get; set; }
-            public string CustomerName { get; set; }
-            public int RoomNo { get; set; }
-            public DateTime CheckIn { get; set; }
-            public DateTime CheckOut { get; set; }
+            public int BookingNo { get; set; }
+            //public string BookingType { get; set; }
+
+            //public int RoomNo { get; set; }
+            public DateOnly CheckIn { get; set; }
+            public DateOnly? CheckOut { get; set; }
             public string BookingStatus { get; set; }
         }
 

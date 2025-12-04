@@ -14,7 +14,7 @@ namespace PayingGuest.Domain.Entities
         public int UserId { get; set; }
         public int BedId { get; set; }
         public DateOnly CheckInDate { get; set; }
-        public DateOnly CheckOutDate { get; set; }
+        public DateOnly? CheckOutDate { get; set; }
 
         //public DateOnly PlannedCheckOutDate { get; set; }
         public decimal MonthlyRent { get; set; }
@@ -29,6 +29,7 @@ namespace PayingGuest.Domain.Entities
         public DateTime CreatedDate { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-       public string? LastModifiedBy { get; set; }
+        public string? LastModifiedBy { get; set; }
+        public int DurationMonths { get; set; }
     }
 }

@@ -19,7 +19,8 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
         public DbSet<Booking> Bookings => Set<Booking>();
-        public DbSet<Booking> Bookingz { get; set; }
+     
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

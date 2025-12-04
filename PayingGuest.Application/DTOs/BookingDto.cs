@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PayingGuest.Application.DTOs
 {
@@ -13,14 +9,19 @@ namespace PayingGuest.Application.DTOs
         public int PropertyId { get; set; }
         public int UserId { get; set; }
         public int BedId { get; set; }
-        public DateOnly CheckInDate { get; set; }
-        public DateOnly CheckOutDate { get; set; }
 
-      //  public DateOnly PlannedCheckOutDate { get; set; }
+        public DateOnly CheckInDate { get; set; }
+        public DateOnly? CheckOutDate { get; set; }
+
         public decimal MonthlyRent { get; set; }
         public decimal SecurityDeposit { get; set; }
+
         public string Status { get; set; } = "Booked";
-        public string BookingType { get; set; } = default!;
+
         public string? SpecialRequests { get; set; }
+        public int DurationMonths { get; set; }
+
+        public string PaymentMethod { get; set; } = default!;
+        public string PaymentNotes { get; set; } = default!;
     }
 }
