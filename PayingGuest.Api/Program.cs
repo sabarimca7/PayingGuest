@@ -1,11 +1,16 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using PayingGuest.Api.Middleware;
 using PayingGuest.Application;
+using PayingGuest.Application.Handlers;
+using PayingGuest.Domain.Interfaces;
 using PayingGuest.Infrastructure;
+using PayingGuest.Infrastructure.Repositories;
 using Serilog;
 using System.Text;
 using System.Text.Json;
+
 
 // Configure Serilog before building the host
 Log.Logger = new LoggerConfiguration()
@@ -19,8 +24,13 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
+
+ 
+
     // Add services to the container
     ConfigureServices(builder.Services, builder.Configuration);
+
+
 
     var app = builder.Build();
 
@@ -131,7 +141,17 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 
     // Add layer services using DI configuration
     services.AddApplication();
-    services.AddInfrastructure(configuration);
+
+
+services.AddInfrastructure(configuration);
+
+    // ADD YOUR CONTACT SERVICE
+    // -----------------------------
+    services.AddScoped<IContactRepository, ContactRepository>();
+
+   
+
+
 
     // Add Authentication & Authorization (if not already added in AddApiServices)
     services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
@@ -190,6 +210,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
         options.EnableForHttps = true;
     });
 }
+
 
 // Configure Middleware Pipeline
 static void ConfigureMiddleware(WebApplication app, IWebHostEnvironment env)

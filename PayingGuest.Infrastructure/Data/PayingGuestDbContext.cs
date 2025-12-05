@@ -19,7 +19,8 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
         public DbSet<Booking> Bookings => Set<Booking>();
-     
+        public DbSet<ContactMessage> ContactMessages { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -298,6 +299,38 @@ namespace PayingGuest.Infrastructure.Data
                       .HasForeignKey(e => e.MenuId)
                       .HasConstraintName("FK_RoleMenuPermission_Menu");
             });
+            modelBuilder.Entity<ContactMessage>(entity =>
+            {
+                // Table name + Schema
+                entity.ToTable("ContactMessages", "PG");
+
+                // Primary Key
+                entity.HasKey(e => e.Id);
+
+                // Properties
+                entity.Property(e => e.Id)
+                      .ValueGeneratedOnAdd(); // Identity (auto increment)
+
+                entity.Property(e => e.YourName)
+                      .HasMaxLength(150)
+                      .IsRequired();
+
+                entity.Property(e => e.EmailAddress)
+                      .HasMaxLength(150)
+                      .IsRequired();
+
+                entity.Property(e => e.Subject)
+                      .HasMaxLength(250)
+                      .IsRequired(false); // NULL allowed
+
+                entity.Property(e => e.Message)
+                      .IsRequired(); // NVARCHAR(MAX)
+
+                entity.Property(e => e.CreatedOn)
+                      .HasDefaultValueSql("GETDATE()")
+                      .IsRequired();
+            });
+
 
         }
     }
