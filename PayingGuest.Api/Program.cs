@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 using PayingGuest.Api.Middleware;
 using PayingGuest.Application;
 using PayingGuest.Application.Handlers;
+using PayingGuest.Application.Interfaces;
+using PayingGuest.Application.Queries;
 using PayingGuest.Domain.Interfaces;
 using PayingGuest.Infrastructure;
 using PayingGuest.Infrastructure.Repositories;
@@ -149,7 +151,12 @@ services.AddInfrastructure(configuration);
     // -----------------------------
     services.AddScoped<IContactRepository, ContactRepository>();
 
-   
+    services.AddScoped<IBedRepository, BedRepository>();
+
+    services.AddScoped<IRoomRepository, RoomRepository>();
+
+    services.AddScoped<IFilterRepository, FilterRepository>();
+
 
 
 

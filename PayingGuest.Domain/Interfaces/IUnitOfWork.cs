@@ -17,6 +17,7 @@ namespace PayingGuest.Domain.Interfaces
         IUserRoleRepository UserRoles { get; }
         IUserTokenRepository UserTokens { get; }
         IRepository<Booking> Bookings { get; }
+        IBedRepository Beds { get; }
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

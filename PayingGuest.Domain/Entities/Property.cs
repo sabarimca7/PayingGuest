@@ -27,5 +27,6 @@ namespace PayingGuest.Domain.Entities
         public DateTime? LastModifiedDate { get; set; }
         public string? LastModifiedBy { get; set; }
         public virtual ICollection<User> Users { get; set; } = new List<User>();
+        public  List<Room> Rooms { get; set; }
     }
 }

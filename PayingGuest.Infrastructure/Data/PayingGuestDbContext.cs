@@ -20,8 +20,8 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
         public DbSet<Booking> Bookings => Set<Booking>();
         public DbSet<ContactMessage> ContactMessages { get; set; }
-
-
+        public DbSet<Room> Room { get; set; }
+        public DbSet<Bed> Bed { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -331,7 +331,138 @@ namespace PayingGuest.Infrastructure.Data
                       .IsRequired();
             });
 
+            modelBuilder.Entity<Bed>(entity =>
+            {
+                entity.ToTable("Bed", "PG");
+
+                // PRIMARY KEY
+                entity.HasKey(e => e.BedId);
+
+                // COLUMNS
+                entity.Property(e => e.BedId)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.RoomId)
+                      .IsRequired();
+
+                entity.Property(e => e.BedNumber)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+                entity.Property(e => e.BedType)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasDefaultValue("Single");
+
+               entity.Property(e => e.Status)
+                      .IsRequired()
+                      .HasMaxLength(20)
+                      .HasDefaultValue("Available");
+
+                entity.Property(e => e.IsActive)
+                     .IsRequired()
+                     .HasDefaultValue(true);
+
+                entity.Property(e => e.CreatedDate)
+                     .IsRequired()
+                     .HasDefaultValueSql("getutcdate()");
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.LastModifiedDate)
+                     .HasColumnType("datetime2");
+
+                entity.Property(e => e.LastModifiedBy)
+                     .HasMaxLength(100);
+
+                // RELATIONSHIP: Bed → Room (Many-to-One)
+                entity.HasOne(e => e.Room)
+                      .WithMany(r => r.Beds)
+                      .HasForeignKey(e => e.RoomId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // ROOM
+            modelBuilder.Entity<Room>(entity =>
+            {
+                entity.ToTable("Room", "PG");
+
+                // PRIMARY KEY
+                entity.HasKey(e => e.RoomId);
+
+                // PROPERTIES
+                entity.Property(e => e.RoomId)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.FloorId)
+                      .IsRequired();
+
+                entity.Property(e => e.PropertyId)
+                      .IsRequired()
+                      .HasDefaultValue(3); // Your default value from SQL
+
+                entity.Property(e => e.RoomNumber)
+                      .IsRequired()
+                      .HasMaxLength(20);
+
+                entity.Property(e => e.RoomName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.RoomType)
+                      .IsRequired()
+                      .HasMaxLength(50)
+                      .HasDefaultValue("Standard");
+
+                entity.Property(e => e.TotalBeds)
+                      .IsRequired()
+                      .HasDefaultValue(0);
+
+                entity.Property(e => e.RentPerBed)
+                      .HasColumnType("decimal(10,2)");
+
+                entity.Property(e => e.SecurityDeposit)
+                      .HasColumnType("decimal(10,2)");
+
+                entity.Property(e => e.Amenities)
+                      .HasMaxLength(1000);
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(500);
+
+                entity.Property(e => e.IsActive)
+                      .IsRequired()
+                      .HasDefaultValue(true);
+
+                entity.Property(e => e.CreatedDate)
+                      .IsRequired()
+                      .HasDefaultValueSql("getutcdate()");
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.LastModifiedDate)
+                      .HasColumnType("datetime2");
+
+                entity.Property(e => e.LastModifiedBy)
+                      .HasMaxLength(100);
+
+                // RELATIONSHIP → Room belongs to Floor
+                //entity.HasOne(e => e.Floor)
+                //      .WithMany(f => f.Rooms)
+                //      .HasForeignKey(e => e.FloorId)
+                //      .OnDelete(DeleteBehavior.NoAction);
+
+                // RELATIONSHIP → Room belongs to Property
+                entity.HasOne(e => e.Property)
+                      .WithMany(p => p.Rooms)
+                      .HasForeignKey(e => e.PropertyId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
 
         }
+
+
     }
-}
+    }

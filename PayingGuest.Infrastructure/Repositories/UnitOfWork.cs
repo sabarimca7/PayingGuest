@@ -19,6 +19,8 @@ namespace PayingGuest.Infrastructure.Repositories
         public IMenuRepository _menus;
         public IUserRoleRepository _userRoles;
         public IUserTokenRepository _userTokens;
+        private BedRepository _beds;
+
         public UnitOfWork(PayingGuestDbContext context)
         {
             _context = context;
@@ -32,6 +34,8 @@ namespace PayingGuest.Infrastructure.Repositories
         public IRepository<Booking> Bookings => _bookings ??= new Repository<Booking>(_context);
         public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
         public IRepository<ClientToken> ClientTokens => _clientTokens ??= new Repository<ClientToken>(_context);
+        public IBedRepository Beds => _beds ??= new BedRepository(_context);
+
 
         public async Task<int> SaveChangesAsync()
         {
