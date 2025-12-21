@@ -10,18 +10,21 @@ namespace PayingGuest.Infrastructure.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Property> Properties { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Property> Property { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<ClientToken> ClientTokens { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
-        public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<Booking> Booking => Set<Booking>();
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<Room> Room { get; set; }
         public DbSet<Bed> Bed { get; set; }
+        // ✅ ADD THIS
+        public DbSet<Payment> Payment { get; set; }
+        public DbSet<Maintenance> Maintenance { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -240,16 +243,33 @@ namespace PayingGuest.Infrastructure.Data
                 entity.Property(e => e.LastModifiedBy)
                       .HasMaxLength(100);
 
+                modelBuilder.Entity<Booking>()
+                       .HasOne(e => e.User)
+                       .WithMany()
+                       .HasForeignKey(e => e.UserId);
+
+                modelBuilder.Entity<Booking>()
+                    .HasOne(e => e.Property)
+                    .WithMany()
+                    .HasForeignKey(e => e.PropertyId);
+
+
+                modelBuilder.Entity<Booking>()
+                    .HasOne(e => e.Bed)
+                    .WithMany()
+                    .HasForeignKey(e => e.BedId);
+                   
+                base.OnModelCreating(modelBuilder);
                 // Foreign Keys (Safe Delete – No Cascade)
-                entity.HasOne<Property>()
-                      .WithMany()
-                      .HasForeignKey(e => e.PropertyId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Property)
+                    .WithMany()
+                    .HasForeignKey(e => e.PropertyId);
+
 
                 entity.HasOne<User>()
                       .WithMany()
-                      .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                      .HasForeignKey(e => e.UserId);
+                      
 
                 //entity.HasOne<Bed>()
                 //      .WithMany()
@@ -459,6 +479,56 @@ namespace PayingGuest.Infrastructure.Data
                       .WithMany(p => p.Rooms)
                       .HasForeignKey(e => e.PropertyId)
                       .OnDelete(DeleteBehavior.NoAction);
+                // PAYMENT
+                // ============================
+                modelBuilder.Entity<Payment>(entity =>
+                {
+                    entity.ToTable("Payment", "PG");
+
+                    entity.HasKey(e => e.PaymentId);
+
+                    entity.Property(e => e.PaymentId)
+                          .UseIdentityColumn();
+
+                    entity.Property(e => e.PaymentNumber)
+                          .HasMaxLength(100)
+                          .IsRequired();
+
+                    entity.HasIndex(e => e.PaymentNumber)
+                          .IsUnique();
+
+                    entity.Property(e => e.PaymentType)
+                          .HasMaxLength(40)
+                          .IsRequired();
+
+                    entity.Property(e => e.PaymentMethod)
+                          .HasMaxLength(40);
+
+                    entity.Property(e => e.Amount)
+                          .HasColumnType("decimal(10,2)")
+                          .IsRequired();
+
+                    entity.Property(e => e.Status)
+                          .HasMaxLength(40)
+                          .HasDefaultValue("Pending");
+
+                    entity.Property(e => e.CreatedDate)
+                          .HasDefaultValueSql("getutcdate()");
+
+                    entity.Property(e => e.IsActive)
+                          .HasDefaultValue(true);
+
+                    // 🔗 FK: Payment → Booking
+                    entity.HasOne(e => e.Booking)
+                          .WithMany(b => b.Payment)
+                          .HasForeignKey(e => e.BookingId);
+                         
+                    modelBuilder.Entity<Payment>()
+                            .HasOne(p => p.Booking)
+                            .WithMany(b => b.Payment)
+                            .HasForeignKey(p => p.BookingId);
+                           
+                });
             });
 
         }

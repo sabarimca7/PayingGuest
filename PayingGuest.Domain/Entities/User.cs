@@ -28,5 +28,8 @@ public class User : BaseEntity
     public bool IsActive { get; set; }
     public int? IdentityServerUserId { get; set; }
     public Property? Property { get; set; } = null!;
+  
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<Booking> Booking { get; set; } = new List<Booking>();
+
 }

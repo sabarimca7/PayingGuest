@@ -157,6 +157,28 @@ services.AddInfrastructure(configuration);
 
     services.AddScoped<IFilterRepository, FilterRepository>();
 
+    services.AddScoped<IDashboardRepository, DashboardRepository>();
+
+    services.AddMediatR(cfg =>
+        cfg.RegisterServicesFromAssembly(typeof(GetDashboardHandler).Assembly));
+
+    services.AddScoped<IRecentBookingRepository, RecentBookingRepository>();
+
+    services.AddScoped<IRecentPaymentRepository, RecentPaymentRepository>();
+    services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(GetRecentPaymentsQuery).Assembly)); ;
+    
+    services.AddScoped<ISystemOverviewRepository, SystemOverviewRepository>();
+
+    services.AddScoped<IUserDashboardRepository, UserDashboardRepository>();
+    services.AddScoped<IRoomAmenitiesRepository, RoomAmenitiesRepository>();
+
+    services.AddScoped<IUpcomingPaymentRepository, UpcomingPaymentRepository>();
+
+    services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
+
+
+
 
 
 

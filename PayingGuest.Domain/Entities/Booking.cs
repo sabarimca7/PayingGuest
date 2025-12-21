@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace PayingGuest.Domain.Entities
     {
         public int BookingId { get; set; }
         public string BookingNumber { get; set; } = default!;
+
+        // 🔑 Foreign Keys
         public int PropertyId { get; set; }
         public int UserId { get; set; }
         public int BedId { get; set; }
@@ -31,5 +34,16 @@ namespace PayingGuest.Domain.Entities
         public DateTime? LastModifiedDate { get; set; }
         public string? LastModifiedBy { get; set; }
         public int DurationMonths { get; set; }
+
+
+      
+
+        // ✅ Navigation properties
+        public User User { get; set; }
+        public Property Property { get; set; }
+        public Bed Bed { get; set; }
+        // ✅ Navigation property (ONE booking → MANY payments)
+        public ICollection<Payment> Payment { get; set; } = new List<Payment>();
     }
+
 }

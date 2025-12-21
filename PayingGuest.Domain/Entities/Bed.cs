@@ -24,5 +24,8 @@ namespace PayingGuest.Domain.Entities
 
         // 🔗 Navigation Property (FK → Room)
         public Room Room { get; set; }
+        public Booking Booking { get; set; }
+        public bool IsOccupied { get; set; }
+        
     }
 }

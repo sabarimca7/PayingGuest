@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Common.Models
 {
-    internal class Bookings
-    {
-        public class Booking
+   
+        public class BookingModel
         {
             public int BookingNo { get; set; }
             //public string BookingType { get; set; }
@@ -19,5 +18,4 @@ namespace PayingGuest.Common.Models
             public string BookingStatus { get; set; }
         }
 
-    }
 }

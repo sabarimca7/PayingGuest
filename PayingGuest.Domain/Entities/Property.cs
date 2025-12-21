@@ -28,5 +28,7 @@ namespace PayingGuest.Domain.Entities
         public string? LastModifiedBy { get; set; }
         public virtual ICollection<User> Users { get; set; } = new List<User>();
         public  List<Room> Rooms { get; set; }
+        // ✅ Reverse navigation
+        public ICollection<Booking> Booking { get; set; } = new List<Booking>();
     }
 }
