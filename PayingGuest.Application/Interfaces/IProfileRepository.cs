@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Interfaces
 {
-    public interface IUserDashboardRepository
+    public interface IProfileRepository
     {
-        Task<UserDashboardDto?> GetUserDashboardAsync(int userId);
-        Task<CurrentBookingDetailsDto?> GetCurrentBookingDetailsAsync(int userId);
+        Task<ProfileSummaryDto> GetUserProfileSummaryAsync(int userId);
     }
 }

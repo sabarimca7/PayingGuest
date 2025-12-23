@@ -36,14 +36,20 @@ namespace PayingGuest.Domain.Entities
         public int DurationMonths { get; set; }
 
 
-      
+
 
         // ✅ Navigation properties
+        [ForeignKey(nameof(UserId))]
         public User User { get; set; }
+
+        [ForeignKey(nameof(PropertyId))]
         public Property Property { get; set; }
+
+        [ForeignKey(nameof(BedId))]
         public Bed Bed { get; set; }
         // ✅ Navigation property (ONE booking → MANY payments)
         public ICollection<Payment> Payment { get; set; } = new List<Payment>();
+      
     }
 
 }

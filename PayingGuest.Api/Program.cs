@@ -177,6 +177,12 @@ services.AddInfrastructure(configuration);
 
     services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 
+    services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+    services.AddHttpContextAccessor();
+
+    services.AddScoped<IProfileRepository, ProfileRepository>();
+
 
 
 

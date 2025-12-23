@@ -18,13 +18,15 @@ namespace PayingGuest.Infrastructure.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
-        public DbSet<Booking> Booking => Set<Booking>();
+        public DbSet<Booking> Booking { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<Room> Room { get; set; }
         public DbSet<Bed> Bed { get; set; }
         // ✅ ADD THIS
         public DbSet<Payment> Payment { get; set; }
         public DbSet<Maintenance> Maintenance { get; set; }
+
+        public DbSet<Floor> Floor { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -243,38 +245,24 @@ namespace PayingGuest.Infrastructure.Data
                 entity.Property(e => e.LastModifiedBy)
                       .HasMaxLength(100);
 
-                modelBuilder.Entity<Booking>()
-                       .HasOne(e => e.User)
-                       .WithMany()
-                       .HasForeignKey(e => e.UserId);
-
-                modelBuilder.Entity<Booking>()
-                    .HasOne(e => e.Property)
-                    .WithMany()
-                    .HasForeignKey(e => e.PropertyId);
-
-
-                modelBuilder.Entity<Booking>()
-                    .HasOne(e => e.Bed)
-                    .WithMany()
-                    .HasForeignKey(e => e.BedId);
+               
                    
                 base.OnModelCreating(modelBuilder);
                 // Foreign Keys (Safe Delete – No Cascade)
-                entity.HasOne(e => e.Property)
-                    .WithMany()
-                    .HasForeignKey(e => e.PropertyId);
+                //entity.HasOne(e => e.Property)
+                //    .WithMany()
+                //    .HasForeignKey(e => e.PropertyId);
 
 
-                entity.HasOne<User>()
-                      .WithMany()
-                      .HasForeignKey(e => e.UserId);
-                      
+                //entity.HasOne<User>()
+                //      .WithMany()
+                //      .HasForeignKey(e => e.UserId);
+
 
                 //entity.HasOne<Bed>()
                 //      .WithMany()
-                //      .HasForeignKey(e => e.BedId)
-                //      .OnDelete(DeleteBehavior.Restrict);
+                //     .HasForeignKey(e => e.BedId);
+                    
 
                 // Indexes
                 entity.HasIndex(e => e.BookingNumber)
@@ -529,6 +517,54 @@ namespace PayingGuest.Infrastructure.Data
                             .HasForeignKey(p => p.BookingId);
                            
                 });
+                modelBuilder.Entity<Floor>(entity =>
+                {
+                    entity.ToTable("Floor", "PG");
+
+                    // 🔑 Primary Key
+                    entity.HasKey(e => e.FloorId);
+
+                    entity.Property(e => e.FloorId)
+                          .UseIdentityColumn();
+
+                    // 🔗 Foreign Key → Property
+                    entity.Property(e => e.PropertyId)
+                          .IsRequired();
+
+            
+
+                    // 📌 Floor fields
+                    entity.Property(e => e.FloorNumber)
+                          .IsRequired();
+
+                    entity.Property(e => e.FloorName)
+                          .HasMaxLength(100)
+                          .IsRequired();
+
+                    entity.Property(e => e.Description)
+                          .HasMaxLength(250);
+
+                    entity.Property(e => e.IsActive)
+                          .HasDefaultValue(true);
+
+                    entity.Property(e => e.CreatedDate)
+                          .HasDefaultValueSql("getutcdate()");
+
+                    entity.Property(e => e.CreatedBy)
+                          .HasMaxLength(100);
+
+                    entity.Property(e => e.LastModifiedDate);
+
+                    entity.Property(e => e.LastModifiedBy)
+                          .HasMaxLength(100);
+
+                    // 🔗 Relationship: Floor → Room
+                    entity.HasMany(e => e.Rooms)
+                          .WithOne(r => r.Floor)
+                          .HasForeignKey(r => r.FloorId)
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
+
             });
 
         }

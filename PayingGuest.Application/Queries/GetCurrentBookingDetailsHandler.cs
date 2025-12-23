@@ -24,6 +24,7 @@ namespace PayingGuest.Application.Queries
             GetCurrentBookingDetailsQuery request,
             CancellationToken cancellationToken)
         {
+
             return await _repository.GetCurrentBookingDetailsAsync(request.UserId);
         }
     }

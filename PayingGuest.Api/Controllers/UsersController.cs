@@ -120,5 +120,30 @@ namespace PayingGuest.Api.Controllers
 
             return NotFound(result);
         }
+        /// <summary>
+        /// Delete user by ID
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns>Success message</returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            _logger.LogInformation("Deleting user with ID: {UserId}", id);
+
+            var command = new DeleteUserCommand { UserId = id };
+            var result = await _mediator.Send(command);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return NotFound(result);
+        }
+
+
+
     }
 }

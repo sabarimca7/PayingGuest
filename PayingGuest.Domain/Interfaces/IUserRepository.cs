@@ -14,5 +14,7 @@ namespace PayingGuest.Domain.Interfaces
         Task<bool> EmailExistsAsync(string email);
         Task<User?> GetByIdentityServerUserIdAsync(int identityServerUserId);
         Task<User?> GetUserWithRolesAsync(int userId);
+        Task DeleteAsync(User user);
+        Task DeleteUserWithBookingsAsync(int userId); // Hard delete with FK cleanup
     }
 }
