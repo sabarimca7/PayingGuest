@@ -55,5 +55,52 @@ namespace PayingGuest.Infrastructure.Repositories
                 .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
         }
+        // 🔹 Get user by ID
+        //public async Task<User?> GetByIdAsync(int id)
+        //{
+        //    return await _context.User
+        //        .FirstOrDefaultAsync(u => u.UserId == id);
+        //}
+
+        //// 🔹 Get only active users (Soft delete filter)
+        //public async Task<List<User>> GetAllActiveAsync()
+        //{
+        //    return await _context.User
+        //        .Where(u => u.IsActive)
+        //        .OrderByDescending(u => u.UserId)
+        //        .ToListAsync();
+        //}
+
+        // 🔹 Update user / Soft delete
+        public async Task UpdateAsync(User user)
+        {
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        // 🔹 Hard delete user ONLY (no bookings)
+        public async Task DeleteAsync(User user)
+        {
+            _context.User.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
+        // 🔹 Hard delete user + bookings (OPTION 4)
+        public async Task DeleteUserWithBookingsAsync(int userId)
+        {
+            var bookings = await _context.Booking
+                .Where(b => b.UserId == userId)
+                .ToListAsync();
+
+            if (bookings.Any())
+                _context.Booking.RemoveRange(bookings);
+
+            var user = await _context.User.FindAsync(userId);
+            if (user != null)
+                _context.User.Remove(user);
+
+            await _context.SaveChangesAsync();
+        }
     }
+
 }

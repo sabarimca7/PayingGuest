@@ -29,11 +29,10 @@ namespace PayingGuest.Domain.Entities
         public string? LastModifiedBy { get; set; }
 
         // Navigation Properties
-       // public Floor Floor { get; set; }
+        public Floor Floor { get; set; }
         public Property Property { get; set; }
         public ICollection<Bed> Beds { get; set; }
-
-        
+   
     }
 }
 

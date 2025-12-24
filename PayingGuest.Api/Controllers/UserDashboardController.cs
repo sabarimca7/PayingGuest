@@ -19,8 +19,7 @@ namespace PayingGuest.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDashboard()
         {
-            // 🔐 Normally from JWT
-            int userId = int.Parse(User.FindFirst("UserId")?.Value ?? "5");
+            int userId = 5; // temporary
 
             var result = await _mediator.Send(new GetUserDashboardQuery
             {

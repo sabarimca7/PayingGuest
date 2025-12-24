@@ -35,8 +35,8 @@ namespace PayingGuest.Infrastructure.Repositories
                     PaymentId = p.PaymentId,
                     PaymentType = p.PaymentType,
                     Amount = p.Amount,
-                    DueDate = p.DueDate!.Value,
-                    Status = p.DueDate.Value <= today.AddDays(3)
+                    DueDate = p.DueDate!,
+                    Status = p.DueDate <= today.AddDays(3)
                         ? "Due Soon"
                         : "Upcoming"
                 })

@@ -30,5 +30,7 @@ namespace PayingGuest.Domain.Entities
         public  List<Room> Rooms { get; set; }
         // ✅ Reverse navigation
         public ICollection<Booking> Booking { get; set; } = new List<Booking>();
+      
+        
     }
 }

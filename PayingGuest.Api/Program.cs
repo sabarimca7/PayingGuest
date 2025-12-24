@@ -177,6 +177,12 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 
     services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 
+    services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+    services.AddHttpContextAccessor();
+
+    services.AddScoped<IProfileRepository, ProfileRepository>();
+
 
 
 
