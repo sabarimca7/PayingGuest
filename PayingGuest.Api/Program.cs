@@ -28,7 +28,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
 
- 
+
 
     // Add services to the container
     ConfigureServices(builder.Services, builder.Configuration);
@@ -146,7 +146,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
     services.AddApplication();
 
 
-services.AddInfrastructure(configuration);
+    services.AddInfrastructure(configuration);
 
     // ADD YOUR CONTACT SERVICE
     // -----------------------------
@@ -168,7 +168,7 @@ services.AddInfrastructure(configuration);
     services.AddScoped<IRecentPaymentRepository, RecentPaymentRepository>();
     services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GetRecentPaymentsQuery).Assembly)); ;
-    
+
     services.AddScoped<ISystemOverviewRepository, SystemOverviewRepository>();
 
     services.AddScoped<IUserDashboardRepository, UserDashboardRepository>();
@@ -256,51 +256,12 @@ static void ConfigureMiddleware(WebApplication app, IWebHostEnvironment env)
     // Enable response compression
     app.UseResponseCompression();
 
-    // Development-specific middleware
-    if (env.IsDevelopment())
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-        app.UseDeveloperExceptionPage();
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PayingGuest API V1");
+    });
 
-        // Enable Swagger in Development
-        app.UseSwagger(options =>
-        {
-            options.SerializeAsV2 = false;
-        });
-
-        app.UseSwaggerUI(options =>
-        {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "PayingGuest API V1");
-            options.RoutePrefix = "swagger"; // Swagger UI at /swagger
-
-            // UI Customizations
-            options.DocumentTitle = "PayingGuest API Documentation";
-            options.DisplayRequestDuration();
-            options.EnableDeepLinking();
-            options.EnableFilter();
-            options.ShowExtensions();
-            options.ShowCommonExtensions();
-            options.EnableValidator();
-            options.EnableTryItOutByDefault();
-
-            // Add custom CSS if needed
-            options.InjectStylesheet("/swagger-ui/custom.css");
-
-            // Collapse models by default
-            options.DefaultModelsExpandDepth(-1);
-
-            // Expand operations by default
-            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-
-            // Enable syntax highlighting
-            options.ConfigObject.AdditionalItems.Add("syntaxHighlight", true);
-        });
-    }
-    else
-    {
-        // Production error handling
-        app.UseExceptionHandler("/error");
-        app.UseHsts();
-    }
 
     // Security headers middleware
     app.Use(async (context, next) =>
