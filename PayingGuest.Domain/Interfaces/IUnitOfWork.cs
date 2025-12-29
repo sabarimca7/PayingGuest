@@ -1,4 +1,5 @@
-﻿using PayingGuest.Domain.Entities;
+﻿
+using PayingGuest.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace PayingGuest.Domain.Interfaces
         IUserTokenRepository UserTokens { get; }
         IRepository<Booking> Bookings { get; }
         IBedRepository Beds { get; }
+        
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
