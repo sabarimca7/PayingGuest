@@ -19,11 +19,15 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
+
         public async Task<List<RecentBookingDto>> Handle(
             GetRecentBookingsQuery request,
             CancellationToken cancellationToken)
         {
-            var bookings = await _repository.GetRecentBookingsAsync(request.Take);
+            var bookings = await _repository.GetRecentBookingsByUserAsync(
+                request.UserId,
+                request.Take
+            );
 
             return bookings.Select(b => new RecentBookingDto
             {
@@ -35,5 +39,6 @@ namespace PayingGuest.Application.Queries
                 Rent = b.MonthlyRent
             }).ToList();
         }
+
     }
 }

@@ -4,7 +4,7 @@ public class UserDto
 {
     public int? UserId { get; set; }
     public int PropertyId { get; set; }
-    public string UserType { get; set; } = string.Empty;
+    public string UserType { get; set; } = "Tenant";
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string FullName => $"{FirstName} {LastName}";

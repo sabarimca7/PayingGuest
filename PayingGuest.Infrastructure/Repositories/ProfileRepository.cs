@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PayingGuest.Application.DTOs;
 using PayingGuest.Application.Interfaces;
+using PayingGuest.Domain.Entities;
 using PayingGuest.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace PayingGuest.Infrastructure.Repositories
         {
             _context = context;
         }
+
+   
 
         public async Task<ProfileSummaryDto?> GetUserProfileSummaryAsync(int userId)
         {
@@ -47,6 +50,16 @@ namespace PayingGuest.Infrastructure.Repositories
                 TotalBookings = totalBookings,
                 Status = user.IsActive ? "Active" : "Inactive"
             };
+        }
+        public async Task<User?> GetByIdAsync(int userId)
+        {
+            return await _context.User
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+        }
+        public async Task UpdateProfileAsync(User user)
+        {
+            _context.User.Update(user);
+            await _context.SaveChangesAsync(); // ✅ ONE operation
         }
     }
     
