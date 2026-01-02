@@ -23,8 +23,7 @@ namespace PayingGuest.Application.Commands
 
         public async Task<BookingDto?> Handle(UpdateBookingCommand request, CancellationToken cancellationToken)
         {
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(b => b.BookingId == request.BookingId);
+            var booking = await _context.Bookings .FirstOrDefaultAsync(b => b.BookingId == request.BookingId);
 
             if (booking == null) return null;
 

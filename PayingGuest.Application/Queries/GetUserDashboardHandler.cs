@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetUserDashboardHandler
-     : IRequestHandler<GetUserDashboardQuery, UserDashboardDto>
+    public class GetUserDashboardHandler: IRequestHandler<GetUserDashboardQuery, UserDashboardDto>
     {
         private readonly IUserDashboardRepository _repository;
 
@@ -20,9 +19,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<UserDashboardDto> Handle(
-            GetUserDashboardQuery request,
-            CancellationToken cancellationToken)
+        public async Task<UserDashboardDto> Handle(GetUserDashboardQuery request,CancellationToken cancellationToken)
         {
             return await _repository.GetUserDashboardAsync(request.UserId);
         }

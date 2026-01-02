@@ -44,8 +44,17 @@ namespace PayingGuest.Infrastructure.Repositories
         // ✅ REQUIRED BY INTERFACE
         public async Task AddAsync(Payment payment)
         {
+            payment.TransactionId = GenerateTransactionId();
+            payment.PaymentDate = DateTime.UtcNow;
+            payment.Status = "Paid";
+
             await _context.Payment.AddAsync(payment);
             await _context.SaveChangesAsync();
+        }
+
+        private string GenerateTransactionId()
+        {
+            return $"TXN-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
         }
     }
 

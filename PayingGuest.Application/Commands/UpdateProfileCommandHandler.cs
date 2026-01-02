@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Commands
 {
-    public class UpdateProfileCommandHandler
-    : IRequestHandler<UpdateProfileCommand, bool>
+    public class UpdateProfileCommandHandler: IRequestHandler<UpdateProfileCommand, bool>
     {
         private readonly IProfileRepository _profileRepository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Commands
             _profileRepository = profileRepository;
         }
 
-        public async Task<bool> Handle(
-    UpdateProfileCommand request,
-    CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateProfileCommand request,CancellationToken cancellationToken)
         {
             var dto = request.Profile;
 

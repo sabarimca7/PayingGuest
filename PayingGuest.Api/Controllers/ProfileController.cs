@@ -26,8 +26,7 @@ namespace PayingGuest.Api.Controllers
         }
         // ✅ PUT: api/profile
         [HttpPut]
-        public async Task<IActionResult> UpdateProfile(
-            [FromBody] UpdateProfileDto dto)
+        public async Task<IActionResult> UpdateProfile( [FromBody] UpdateProfileDto dto)
         {
             await _mediator.Send(new UpdateProfileCommand
             {

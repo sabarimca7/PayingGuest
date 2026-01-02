@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetCurrentBookingDetailsQuery : IRequest<CurrentBookingDetailsDto>
+    public class GetUserRecentBookingsQuery: IRequest<List<RecentBookingDto>>
     {
         public int UserId { get; set; }
+        public int Take { get; set; } = 5;
     }
 }

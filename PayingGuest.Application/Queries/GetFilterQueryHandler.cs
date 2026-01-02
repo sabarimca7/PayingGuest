@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class FilterRoomsQueryHandler
-         : IRequestHandler<FilterQuery, List<RoomDto>>
+    public class FilterRoomsQueryHandler: IRequestHandler<FilterQuery, List<RoomDto>>
     {
         private readonly IFilterRepository _roomFilterRepository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _roomFilterRepository = roomFilterRepository;
         }
 
-        public async Task<List<RoomDto>> Handle(
-            FilterQuery request,
-            CancellationToken cancellationToken)
+        public async Task<List<RoomDto>> Handle(FilterQuery request,  CancellationToken cancellationToken)
         {
             var rooms = await _roomFilterRepository.FilterRoomsAsync(
                 //request.Filter.PropertyId,

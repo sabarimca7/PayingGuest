@@ -8,6 +8,5 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public record GetMaintenanceRequestsQuery(int UserId)
-       : IRequest<List<MaintenanceRequestDto>>;
+    public record GetMaintenanceRequestsQuery(int UserId)  : IRequest<List<MaintenanceRequestDto>>;
 }

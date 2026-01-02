@@ -30,19 +30,15 @@ namespace PayingGuest.Api.Controllers
         }
 
         [HttpGet("current-booking")]
-        public async Task<IActionResult> GetCurrentBooking()
+        public async Task<IActionResult> GetCurrentBooking([FromQuery] int userId)
         {
-            int userId = 8; // temporary / from JWT later
-
-            var booking = await _mediator.Send(
-                new GetCurrentBookingDetailsQuery { UserId = userId }
-            );
-
-            if (booking == null)
-                return NotFound("No active booking found");
-
-            return Ok(booking);
+            var result = await _mediator.Send(new GetCurrentBookingDetailsQuery
+            {
+                UserId = userId
+            });
+            return Ok(result);
         }
+
 
         [HttpGet("{roomId}/amenities")] 
         public async Task<IActionResult> GetRoomAmenities(int roomId)
@@ -67,16 +63,18 @@ namespace PayingGuest.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Bookings/recent/{userId}")]
-        public async Task<IActionResult> GetRecentBookings(int userId)
+        [HttpGet("recent-bookings")]
+        public async Task<IActionResult> GetUserRecentBookings([FromQuery] int userId, [FromQuery] int take = 5)
         {
-            var result = await _mediator.Send(new GetRecentBookingsQuery
+            var result = await _mediator.Send(new GetUserRecentBookingsQuery
             {
                 UserId = userId,
-                Take = 5
+                Take = take
             });
 
             return Ok(result);
         }
+
+
     }
 }

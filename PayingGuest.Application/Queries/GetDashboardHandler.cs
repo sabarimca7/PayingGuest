@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetDashboardHandler
-        : IRequestHandler<GetDashboardQuery, DashboardDto>
+    public class GetDashboardHandler: IRequestHandler<GetDashboardQuery, DashboardDto>
     {
         private readonly IDashboardRepository _repo;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _repo = repo;
         }
 
-        public async Task<DashboardDto> Handle(
-            GetDashboardQuery request,
-            CancellationToken cancellationToken)
+        public async Task<DashboardDto> Handle(  GetDashboardQuery request,  CancellationToken cancellationToken)
         {
             return new DashboardDto
             {

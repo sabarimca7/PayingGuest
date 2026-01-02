@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetPaymentDetailsHandler
-     : IRequestHandler<GetPaymentDetailsQuery, List<PaymentDetailsDto>>
+    public class GetPaymentDetailsHandler : IRequestHandler<GetPaymentDetailsQuery, List<PaymentDetailsDto>>
     {
         private readonly IPaymentRepository _paymentRepository;
 
@@ -21,9 +20,7 @@ namespace PayingGuest.Application.Queries
         }
 
 
-        public async Task<List<PaymentDetailsDto>> Handle(
-              GetPaymentDetailsQuery request,
-              CancellationToken cancellationToken)
+        public async Task<List<PaymentDetailsDto>> Handle(GetPaymentDetailsQuery request,CancellationToken cancellationToken)
         {
             return await _paymentRepository.GetPaymentDetailsAsync()
                    ?? new List<PaymentDetailsDto>();

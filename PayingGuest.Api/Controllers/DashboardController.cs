@@ -22,13 +22,10 @@ namespace PayingGuest.Api.Controllers
             var result = await _mediator.Send(new GetDashboardQuery());
             return Ok(result);
         }
-
-        //Recent Bookings
-        // Recent bookings for dashboard
         [HttpGet("recent-bookings")]
         public async Task<IActionResult> GetRecentBookings([FromQuery] int take = 5)
         {
-            var result = await _mediator.Send(new GetRecentBookingsQuery
+            var result = await _mediator.Send(new GetAdminRecentBookingsQuery
             {
                 Take = take
             });

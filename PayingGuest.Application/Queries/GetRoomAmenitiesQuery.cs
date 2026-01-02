@@ -8,6 +8,5 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public record GetRoomAmenitiesQuery(int RoomId)
-       : IRequest<RoomAmenitiesDto>;
+    public record GetRoomAmenitiesQuery(int RoomId) : IRequest<RoomAmenitiesDto>;
 }

@@ -20,9 +20,7 @@ namespace PayingGuest.Application.Queries
             _profileRepository = profileRepository;
         }
 
-        public async Task<ProfileSummaryDto> Handle(
-            GetProfileQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ProfileSummaryDto> Handle(GetProfileQuery request,CancellationToken cancellationToken)
         {
             return await _profileRepository
                 .GetUserProfileSummaryAsync(request.UserId);

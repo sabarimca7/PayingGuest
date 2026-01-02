@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Commands
 {
-    public class CreatePaymentCommandHandler
-       : IRequestHandler<CreatePaymentCommand, int>
+    public class CreatePaymentCommandHandler: IRequestHandler<CreatePaymentCommand, int>
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IPaymentRepository _paymentRepository;
@@ -24,13 +23,10 @@ namespace PayingGuest.Application.Commands
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<int> Handle(
-            CreatePaymentCommand request,
-            CancellationToken cancellationToken)
+        public async Task<int> Handle( CreatePaymentCommand request,CancellationToken cancellationToken)
         {
             // 🔒 Validate booking exists
-            var booking = await _bookingRepository
-                .GetByIdAsync(request.BookingId);
+            var booking = await _bookingRepository .GetByIdAsync(request.BookingId);
 
             if (booking == null)
                 throw new Exception("Booking not found");

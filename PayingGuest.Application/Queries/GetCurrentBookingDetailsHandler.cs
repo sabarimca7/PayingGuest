@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 namespace PayingGuest.Application.Queries
 {
 
-    public class GetCurrentBookingDetailsHandler
-        : IRequestHandler<GetCurrentBookingDetailsQuery, CurrentBookingDetailsDto?>
+    public class GetCurrentBookingDetailsHandler : IRequestHandler<GetCurrentBookingDetailsQuery, CurrentBookingDetailsDto?>
     {
         private readonly IUserDashboardRepository _repository;
 
@@ -20,9 +19,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<CurrentBookingDetailsDto?> Handle(
-            GetCurrentBookingDetailsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<CurrentBookingDetailsDto?> Handle( GetCurrentBookingDetailsQuery request, CancellationToken cancellationToken)
         {
 
             return await _repository.GetCurrentBookingDetailsAsync(request.UserId);

@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetRoomAmenitiesHandler
-       : IRequestHandler<GetRoomAmenitiesQuery, RoomAmenitiesDto>
+    public class GetRoomAmenitiesHandler: IRequestHandler<GetRoomAmenitiesQuery, RoomAmenitiesDto>
     {
         private readonly IRoomAmenitiesRepository _repository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<RoomAmenitiesDto> Handle(
-            GetRoomAmenitiesQuery request,
-            CancellationToken cancellationToken)
+        public async Task<RoomAmenitiesDto> Handle(GetRoomAmenitiesQuery request, CancellationToken cancellationToken)
         {
             var amenities = await _repository.GetAmenitiesByRoomIdAsync(request.RoomId);
 

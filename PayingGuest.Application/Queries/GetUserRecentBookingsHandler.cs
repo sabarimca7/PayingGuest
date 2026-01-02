@@ -9,20 +9,16 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetRecentBookingsHandler
-        : IRequestHandler<GetRecentBookingsQuery, List<RecentBookingDto>>
+    public class GetUserRecentBookingsHandler : IRequestHandler<GetUserRecentBookingsQuery, List<RecentBookingDto>>
     {
         private readonly IRecentBookingRepository _repository;
 
-        public GetRecentBookingsHandler(IRecentBookingRepository repository)
+        public GetUserRecentBookingsHandler(IRecentBookingRepository repository)
         {
             _repository = repository;
         }
 
-
-        public async Task<List<RecentBookingDto>> Handle(
-            GetRecentBookingsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<List<RecentBookingDto>> Handle( GetUserRecentBookingsQuery request,CancellationToken cancellationToken)
         {
             var bookings = await _repository.GetRecentBookingsByUserAsync(
                 request.UserId,
@@ -34,11 +30,10 @@ namespace PayingGuest.Application.Queries
                 BookingNumber = b.BookingNumber,
                 TenantName = b.User.FirstName,
                 PropertyName = b.Property.PropertyName,
-                RoomNumber = b.Bed.Room.RoomNumber,
+                RoomNumber = b.Bed?.Room?.RoomNumber ?? "N/A",
                 MoveInDate = b.CheckInDate.ToDateTime(TimeOnly.MinValue),
                 Rent = b.MonthlyRent
             }).ToList();
         }
-
     }
 }
