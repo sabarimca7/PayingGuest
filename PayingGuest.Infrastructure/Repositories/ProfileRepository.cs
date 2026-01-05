@@ -47,7 +47,7 @@ namespace PayingGuest.Infrastructure.Repositories
                 Name = $"{user.FirstName} {user.LastName}",
                 Email = user.EmailAddress,
                 Phone = user.PhoneNumber,
-                TotalBookings = totalBookings,
+                
                 Status = user.IsActive ? "Active" : "Inactive"
             };
         }

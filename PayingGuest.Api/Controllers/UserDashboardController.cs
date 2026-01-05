@@ -17,9 +17,9 @@ namespace PayingGuest.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetDashboard()
+        public async Task<IActionResult> GetDashboard([FromQuery] int userId)
         {
-            int userId = 8; // temporary
+          
 
             var result = await _mediator.Send(new GetUserDashboardQuery
             {

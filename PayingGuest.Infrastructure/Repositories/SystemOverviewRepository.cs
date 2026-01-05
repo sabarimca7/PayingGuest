@@ -23,7 +23,7 @@ namespace PayingGuest.Infrastructure.Repositories
             var totalRooms = await _context.Room.CountAsync();
 
             var occupiedRooms = await _context.Booking
-                .Where(b => b.Status == "Booked" || b.Status == "Active")
+                .Where(b => b.Status == "Booked")
                 .Select(b => b.BedId)
                 .Distinct()
                 .CountAsync();
@@ -41,6 +41,10 @@ namespace PayingGuest.Infrastructure.Repositories
                 ? 0
                 : (decimal)occupiedRooms / totalRooms * 100;
 
+            var pendingPayments = await _context.Payment
+               .CountAsync(p => p.Status == "Pending" && p.IsActive);
+
+
             return new SystemOverview
             {
                 TotalProperties = totalProperties,
@@ -51,7 +55,7 @@ namespace PayingGuest.Infrastructure.Repositories
                 OccupancyPercentage = Math.Round(occupancyPercentage, 2),
                 PendingBookings = pendingBookings,
                 TotalRevenue = totalRevenue,
-                PendingPayments = "Paid"
+                PendingPayments = pendingPayments
             };
         }
     }

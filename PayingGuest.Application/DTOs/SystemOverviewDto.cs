@@ -16,6 +16,6 @@ namespace PayingGuest.Application.DTOs
         public int AvailableRooms { get; set; }
         public int PendingBookings { get; set; }
         public decimal TotalRevenue { get; set; }
-        public string PendingPayments { get; set; } = "Paid";
+        public int PendingPayments { get; set; }
     }
 }

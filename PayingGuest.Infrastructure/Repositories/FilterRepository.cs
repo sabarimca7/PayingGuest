@@ -17,26 +17,44 @@ namespace PayingGuest.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Room>> FilterRoomsAsync(
-            //int propertyId,
-            decimal? minPrice,
-            decimal? maxPrice,
-            int? capacity)
-        {
-            var query = _context.Room
-                //.Where(r => r.PropertyId == propertyId)
-                .AsQueryable();
+public async Task<List<Room>> FilterRoomsAsync(
+    decimal? minPrice,
+    decimal? maxPrice,
+    int? capacity)
+{
+    // 🔒 Price validation (6 digits)
+    if (minPrice.HasValue && minPrice > 999999)
+        throw new ArgumentException("Min price cannot exceed 6 digits");
 
-            if (minPrice.HasValue)
-                query = query.Where(r => r.RentPerBed >= minPrice.Value);
+    if (maxPrice.HasValue && maxPrice > 999999)
+        throw new ArgumentException("Max price cannot exceed 6 digits");
 
-            if (maxPrice.HasValue)
-                query = query.Where(r => r.RentPerBed <= maxPrice.Value);
+    // 🔒 Negative values
+    if (minPrice < 0 || maxPrice < 0)
+        throw new ArgumentException("Price cannot be negative");
 
-            if (capacity.HasValue)
-                query = query.Where(r => r.TotalBeds >= capacity.Value);
+    // 🔒 Capacity validation
+    if (capacity.HasValue && capacity < 1)
+        throw new ArgumentException("Capacity must be at least 1");
 
-            return await query.ToListAsync();
-        }
+    // 🔒 Logical validation
+    if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
+        throw new ArgumentException("Min price cannot be greater than Max price");
+
+    // 🔍 Filtering logic
+    IQueryable<Room> query = _context.Room.AsQueryable();
+
+    if (minPrice.HasValue)
+        query = query.Where(r => r.RentPerBed >= minPrice);
+
+    if (maxPrice.HasValue)
+        query = query.Where(r => r.RentPerBed <= maxPrice);
+
+    if (capacity.HasValue)
+        query = query.Where(r => r.TotalBeds >= capacity);
+
+    return await query.ToListAsync();
+}
+
     }
 }

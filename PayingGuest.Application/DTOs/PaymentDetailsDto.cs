@@ -8,6 +8,7 @@ namespace PayingGuest.Application.DTOs
 {
     public class PaymentDetailsDto
     {
+        public string BookingNumber { get; set; }  // ✅ NOT BookingId
         public string TransactionId { get; set; }
         public string PhoneNumber { get; set; }
         public decimal Amount { get; set; }
