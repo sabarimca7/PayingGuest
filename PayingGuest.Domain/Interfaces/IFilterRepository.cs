@@ -10,7 +10,7 @@ namespace PayingGuest.Domain.Interfaces
     public interface IFilterRepository
     {
         Task<List<Room>> FilterRoomsAsync(
-            //int propertyId,
+            int propertyId,
             decimal? minPrice,
             decimal? maxPrice,
             int? Capacity

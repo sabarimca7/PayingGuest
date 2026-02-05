@@ -18,6 +18,7 @@ namespace PayingGuest.Infrastructure.Repositories
         }
 
 public async Task<List<Room>> FilterRoomsAsync(
+     int propertyId,
     decimal? minPrice,
     decimal? maxPrice,
     int? capacity)
@@ -43,6 +44,9 @@ public async Task<List<Room>> FilterRoomsAsync(
 
     // 🔍 Filtering logic
     IQueryable<Room> query = _context.Room.AsQueryable();
+
+            
+    query = query.Where(r => r.PropertyId == propertyId);
 
     if (minPrice.HasValue)
         query = query.Where(r => r.RentPerBed >= minPrice);

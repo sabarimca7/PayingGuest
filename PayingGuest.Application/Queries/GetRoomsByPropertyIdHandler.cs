@@ -34,7 +34,7 @@ namespace PayingGuest.Application.Queries
                 RoomName = r.RoomName,
                 TotalBeds = r.TotalBeds,
                 RentPerBed = r.RentPerBed,
-                Image = r.RoomId == 2 ? "assets/img/single.jpg" : r.RoomId == 5? "assets/img/double.jpg": "assets/img/triple.jpg",
+                Image = r.RoomId == 26 ? "assets/img/single.jpg" : r.RoomId == 27? "assets/img/double.jpg": "assets/img/triple.jpg",
 
                 // ⭐ Features generated here (BEST PRACTICE)
                 Features = new List<string>
