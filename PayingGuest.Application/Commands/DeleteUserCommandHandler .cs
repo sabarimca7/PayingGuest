@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Commands
 {
-    public class DeleteUserCommandHandler
-       : IRequestHandler<DeleteUserCommand, ApiResponse<bool>>
+    public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, ApiResponse<bool>>
     {
         private readonly IUserRepository _userRepository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Commands
             _userRepository = userRepository;
         }
 
-        public async Task<ApiResponse<bool>> Handle(
-    DeleteUserCommand request,
-    CancellationToken cancellationToken)
+        public async Task<ApiResponse<bool>> Handle( DeleteUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(request.UserId);
 

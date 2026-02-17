@@ -8,6 +8,5 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public record GetUpcomingPaymentsQuery(int UserId)
-       : IRequest<List<UpcomingPaymentDto>>;
+    public record GetUpcomingPaymentsQuery(int UserId) : IRequest<List<UpcomingPaymentDto>>;
 }

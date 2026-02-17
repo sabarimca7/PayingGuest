@@ -8,6 +8,7 @@ namespace PayingGuest.Application.DTOs
 {
     public class RoomFilterDto
     {
+        public int PropertyId { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public int? Capacity { get; set; }

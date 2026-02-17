@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetSystemOverviewHandler
-        : IRequestHandler<GetSystemOverviewQuery, SystemOverviewDto>
+    public class GetSystemOverviewHandler: IRequestHandler<GetSystemOverviewQuery, SystemOverviewDto>
     {
         private readonly ISystemOverviewRepository _repository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<SystemOverviewDto> Handle(
-            GetSystemOverviewQuery request,
-            CancellationToken cancellationToken)
+        public async Task<SystemOverviewDto> Handle(GetSystemOverviewQuery request,CancellationToken cancellationToken)
         {
             var data = await _repository.GetSystemOverviewAsync();
 

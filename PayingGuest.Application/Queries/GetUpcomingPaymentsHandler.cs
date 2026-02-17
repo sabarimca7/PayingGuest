@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetUpcomingPaymentsHandler
-          : IRequestHandler<GetUpcomingPaymentsQuery, List<UpcomingPaymentDto>>
+    public class GetUpcomingPaymentsHandler : IRequestHandler<GetUpcomingPaymentsQuery, List<UpcomingPaymentDto>>
     {
         private readonly IUpcomingPaymentRepository _repository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<List<UpcomingPaymentDto>> Handle(
-            GetUpcomingPaymentsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<List<UpcomingPaymentDto>> Handle(GetUpcomingPaymentsQuery request,CancellationToken cancellationToken)
         {
             return await _repository.GetUpcomingPaymentsAsync(request.UserId);
         }

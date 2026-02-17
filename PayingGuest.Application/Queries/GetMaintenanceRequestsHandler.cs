@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetMaintenanceRequestsHandler
-       : IRequestHandler<GetMaintenanceRequestsQuery, List<MaintenanceRequestDto>>
+    public class GetMaintenanceRequestsHandler : IRequestHandler<GetMaintenanceRequestsQuery, List<MaintenanceRequestDto>>
     {
         private readonly IMaintenanceRepository _repository;
 
@@ -19,9 +18,7 @@ namespace PayingGuest.Application.Queries
             _repository = repository;
         }
 
-        public async Task<List<MaintenanceRequestDto>> Handle(
-            GetMaintenanceRequestsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<List<MaintenanceRequestDto>> Handle(GetMaintenanceRequestsQuery request,CancellationToken cancellationToken)
         {
             return await _repository.GetByUserIdAsync(request.UserId);
         }

@@ -17,9 +17,9 @@ namespace PayingGuest.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetDashboard()
+        public async Task<IActionResult> GetDashboard([FromQuery] int userId)
         {
-            int userId = 5; // temporary
+          
 
             var result = await _mediator.Send(new GetUserDashboardQuery
             {
@@ -30,22 +30,17 @@ namespace PayingGuest.Api.Controllers
         }
 
         [HttpGet("current-booking")]
-        public async Task<IActionResult> GetCurrentBookingDetails()
+        public async Task<IActionResult> GetCurrentBooking([FromQuery] int userId)
         {
-            // 🔐 Normally from JWT claims
-            int userId = int.Parse(User.FindFirst("UserId")?.Value ?? "1");
-
             var result = await _mediator.Send(new GetCurrentBookingDetailsQuery
             {
                 UserId = userId
             });
-
-            if (result == null)
-                return NotFound("No active booking found");
-
             return Ok(result);
         }
-        [HttpGet("{roomId}/amenities")]
+
+
+        [HttpGet("{roomId}/amenities")] 
         public async Task<IActionResult> GetRoomAmenities(int roomId)
         {
             var result = await _mediator.Send(new GetRoomAmenitiesQuery(roomId));
@@ -59,7 +54,7 @@ namespace PayingGuest.Api.Controllers
 
             return Ok(result);
         }
-        [HttpGet("user/{userId}")]
+        [HttpGet("usermaintenance/{userId}")]
         public async Task<IActionResult> GetUserMaintenanceRequests(int userId)
         {
             var result = await _mediator.Send(
@@ -67,5 +62,19 @@ namespace PayingGuest.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("recent-bookings")]
+        public async Task<IActionResult> GetUserRecentBookings([FromQuery] int userId, [FromQuery] int take = 5)
+        {
+            var result = await _mediator.Send(new GetUserRecentBookingsQuery
+            {
+                UserId = userId,
+                Take = take
+            });
+
+            return Ok(result);
+        }
+
+
     }
 }

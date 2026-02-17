@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PayingGuest.Application.Queries
+namespace PayingGuest.Application.Commands
 {
-    public class GetCurrentBookingDetailsQuery : IRequest<CurrentBookingDetailsDto>
+    public class UpdateProfileCommand : IRequest<bool>
     {
-        public int UserId { get; set; }
+        public UpdateProfileDto Profile { get; set; }
     }
 }

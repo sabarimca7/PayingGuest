@@ -25,34 +25,33 @@ public class UserDashboardRepository : IUserDashboardRepository
                 b.CreatedDate,
                 b.DurationMonths,
                 b.CheckInDate,
-                RentPerBed = b.Bed.Room.RentPerBed,
-                BookingId = b.BookingId
+                b.Bed.Room.RentPerBed,
+                b.BookingId
             })
             .FirstOrDefaultAsync();
+
 
         if (booking == null)
             return new UserDashboardDto();
 
 
-        // 2️⃣ Convert CheckInDate (DateOnly → DateTime)
+        //  Convert CheckInDate (DateOnly → DateTime)
         DateTime checkInDate =
             booking.CheckInDate.ToDateTime(TimeOnly.MinValue);
 
-        // 3️⃣ Format "Since" text (THIS IS THE KEY LINE)
-        string bookingSince =
-            $"Since {checkInDate:MMM d, yyyy}";
+        DateTime bookingSince = booking.CheckInDate.ToDateTime(TimeOnly.MinValue);
 
-        // 3️⃣ Find last PAID monthly rent (if any)
+        //  Find last PAID monthly rent (if any)
         var lastPaidRentDate = await _context.Payment
             .Where(p =>
                 p.BookingId == booking.BookingId &&
-                p.PaymentType == "MonthlyRent" &&
+                p.PaymentType == "Monthly Rent" &&
                 p.Status == "Paid")
             .OrderByDescending(p => p.PaymentDate)
             .Select(p => p.PaymentDate)
             .FirstOrDefaultAsync();
 
-        // 4️⃣ Calculate next due date
+        //  Calculate next due date
         DateTime nextDueDate;
 
         if (lastPaidRentDate != default)
@@ -66,7 +65,7 @@ public class UserDashboardRepository : IUserDashboardRepository
             nextDueDate = checkInDate.AddMonths(1);
         }
 
-        // 1️⃣ Get all pending payments for the user
+        //  Get all pending payments for the user
         var pendingPayments = await _context.Payment
             .Where(p =>
                 p.Booking.UserId == userId &&
@@ -76,11 +75,11 @@ public class UserDashboardRepository : IUserDashboardRepository
             .Select(p => p.Amount)
             .ToListAsync();
 
-        // 2️⃣ Calculate count & total
+        //  Calculate count & total
         int pendingCount = pendingPayments.Count;
         decimal pendingTotalAmount = pendingPayments.Sum();
 
-        // 2️⃣ Calculate months stayed
+        //  Calculate months stayed
         int monthsStayed =
             ((DateTime.Now.Year - booking.CheckInDate.Year) * 12) +
             (DateTime.Now.Month - booking.CheckInDate.Month);
@@ -88,19 +87,21 @@ public class UserDashboardRepository : IUserDashboardRepository
         if (monthsStayed < 0)
             monthsStayed = 0;
 
-        // 3️⃣ Calculate "Since" text
-        string staySince = $"{booking.CheckInDate:MMM yyyy} ({monthsStayed} months)";
+        
+        DateTime staySince = booking.CheckInDate.ToDateTime(TimeOnly.MinValue);
+
 
 
         return new UserDashboardDto
         {
             BookingStatus = booking.Status,
-            BookingSince = bookingSince,
+            // ✅ DateTime values
+            BookingSince = checkInDate,
             MonthlyRent = booking.RentPerBed,
             PendingCount = pendingCount,
             PendingTotalAmount = pendingTotalAmount,
             StayDurationMonths = booking.DurationMonths,
-            StaySince = staySince,
+            StaySince = checkInDate,
             NextDueDate = nextDueDate
         };
     }
@@ -167,12 +168,12 @@ public class UserDashboardRepository : IUserDashboardRepository
 
                 // ✅ FIXED: Deposit only
                 SecurityDeposit = g
-                .Where(x => x.p != null && x.p.PaymentType == "Deposit")
+                .Where(x => x.p != null && x.p.PaymentType == "Monthly Rent")
                 .Select(x => x.p.Amount)
                 .FirstOrDefault(),
 
                 IsDepositPaid = g
-                .Any(x => x.p != null && x.p.PaymentType == "Deposit")
+                .Any(x => x.p != null && x.p.PaymentType == "Monthly Rent")
             }
         ).FirstOrDefaultAsync();
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using PayingGuest.Api.Middleware;
 using PayingGuest.Application;
+using PayingGuest.Application.Commands;
 using PayingGuest.Application.Handlers;
 using PayingGuest.Application.Interfaces;
 using PayingGuest.Application.Queries;
@@ -182,9 +183,11 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
     services.AddHttpContextAccessor();
 
     services.AddScoped<IProfileRepository, ProfileRepository>();
+    services.AddScoped<IBookingRepository, BookingRepository>();
 
-
-
+    services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly)
+);
 
 
 

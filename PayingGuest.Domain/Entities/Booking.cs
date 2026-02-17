@@ -49,7 +49,9 @@ namespace PayingGuest.Domain.Entities
         public Bed Bed { get; set; }
         // ✅ Navigation property (ONE booking → MANY payments)
         public ICollection<Payment> Payment { get; set; } = new List<Payment>();
-      
+        // Navigation
+       
+
     }
 
 }

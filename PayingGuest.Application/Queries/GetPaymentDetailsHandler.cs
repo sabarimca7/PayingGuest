@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using PayingGuest.Application.DTOs;
 using PayingGuest.Application.Interfaces;
+using PayingGuest.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,20 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetPaymentDetailsHandler
-     : IRequestHandler<GetPaymentDetailsQuery, List<PaymentDetailsDto>>
+    public class GetPaymentDetailsHandler : IRequestHandler<GetPaymentDetailsQuery, List<PaymentDetailsDto>>
     {
-        private readonly IPaymentRepository _repo;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public GetPaymentDetailsHandler(IPaymentRepository repo)
+        public GetPaymentDetailsHandler(IPaymentRepository paymentRepository)
         {
-            _repo = repo;
+            _paymentRepository = paymentRepository;
         }
 
-        public async Task<List<PaymentDetailsDto>> Handle(
-            GetPaymentDetailsQuery request,
-            CancellationToken cancellationToken)
+
+        public async Task<List<PaymentDetailsDto>> Handle(GetPaymentDetailsQuery request,CancellationToken cancellationToken)
         {
-            return await _repo.GetPaymentDetailsAsync();
+            return await _paymentRepository.GetPaymentDetailsAsync()
+                   ?? new List<PaymentDetailsDto>();
         }
     }
 }

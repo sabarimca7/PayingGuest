@@ -27,25 +27,61 @@ namespace PayingGuest.Infrastructure.Repositories
                          && p.CreatedDate < DateTime.Now)
                 .CountAsync();
 
+        //public async Task<int> GetTotalUsersAsync()
+        //    => await _context.User.CountAsync();
+
         public async Task<int> GetTotalUsersAsync()
-            => await _context.User.CountAsync();
+        {
+            return await _context.User
+                .Where(u => u.UserType != "Admin")
+                .CountAsync();
+        }
+
+        //public async Task<int> GetLastMonthUsersAsync()
+        //    => await _context.User
+        //        .Where(u => u.CreatedDate >= DateTime.Now.AddMonths(-1)
+        //                 && u.CreatedDate < DateTime.Now)
+        //        .CountAsync();
 
         public async Task<int> GetLastMonthUsersAsync()
-            => await _context.User
-                .Where(u => u.CreatedDate >= DateTime.Now.AddMonths(-1)
+        {
+            return await _context.User
+                .Where(u => u.UserType != "Admin"
+                         && u.CreatedDate >= DateTime.Now.AddMonths(-1)
                          && u.CreatedDate < DateTime.Now)
                 .CountAsync();
+        }
+
+
+        //public async Task<int> GetActiveTenantsAsync()
+        //    => await _context.User
+        //        .Where(t => t.IsActive)
+        //        .CountAsync();
 
         public async Task<int> GetActiveTenantsAsync()
-            => await _context.User
-                .Where(t => t.IsActive)
+        {
+            return await _context.User
+                .Where(u => u.UserType == "Tenant" && u.IsActive)
                 .CountAsync();
+        }
+
+
+        //public async Task<int> GetLastMonthActiveTenantsAsync()
+        //    => await _context.User
+        //        .Where(t => t.IsActive &&
+        //                    t.CreatedDate >= DateTime.Now.AddMonths(-1))
+        //        .CountAsync();
 
         public async Task<int> GetLastMonthActiveTenantsAsync()
-            => await _context.User
-                .Where(t => t.IsActive &&
-                            t.CreatedDate >= DateTime.Now.AddMonths(-1))
+        {
+            return await _context.User
+                .Where(u => u.UserType == "Tenant"
+                         && u.IsActive
+                         && u.CreatedDate >= DateTime.Now.AddMonths(-1)
+                         && u.CreatedDate < DateTime.Now)
                 .CountAsync();
+        }
+
 
         public async Task<decimal> GetCurrentMonthRevenueAsync()
             => await _context.Payment

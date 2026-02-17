@@ -81,9 +81,7 @@ namespace PayingGuest.Api.Controllers
         //   api/booking/search?propertyId=1&status=Active&page=1&pageSize=10
         // ----------------------------------------------------
         [HttpGet("search")]
-        public async Task<ActionResult<List<BookingDto>>> Search(
-            [FromQuery] SearchBookingsQuery query,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<List<BookingDto>>> Search([FromQuery] SearchBookingsQuery query, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(query, cancellationToken);
 

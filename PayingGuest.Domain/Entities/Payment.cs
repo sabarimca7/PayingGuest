@@ -13,22 +13,22 @@ namespace PayingGuest.Domain.Entities
         public int BookingId { get; set; }
         //public int UserId { get; set; }
 
-        // 🔗 Navigation
+        [ForeignKey(nameof(BookingId))]
         public Booking Booking { get; set; }
 
         // ================= PAYMENT DETAILS =================
 
         [Required]
         [MaxLength(50)]
-        public string PaymentNumber { get; set; }
+        public string? PaymentNumber { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string PaymentType { get; set; }      // Rent / Deposit / Maintenance
+        public string? PaymentType { get; set; }      // Rent / Deposit / Maintenance
 
         [Required]
         [MaxLength(50)]
-        public string PaymentMethod { get; set; }    // UPI / Cash / Bank Transfer
+        public string? PaymentMethod { get; set; }    // UPI / Cash / Bank Transfer
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
@@ -38,12 +38,12 @@ namespace PayingGuest.Domain.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Status { get; set; }            // Paid / Pending
+        public string? Status { get; set; }            // Paid / Pending
 
         // ================= TRANSACTION INFO =================
 
         [MaxLength(100)]
-        public string TransactionId { get; set; }
+        public string? TransactionId { get; set; }
 
         [MaxLength(100)]
         public string? BankReference { get; set; }
@@ -69,5 +69,6 @@ namespace PayingGuest.Domain.Entities
 
         public DateTime? LastModifiedDate { get; set; }
         public string LastModifiedBy { get; set; }
+    
     }
 }

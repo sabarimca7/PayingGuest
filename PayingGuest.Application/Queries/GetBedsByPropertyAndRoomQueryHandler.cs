@@ -12,8 +12,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class GetBedsByPropertyAndRoomQueryHandler
-      : IRequestHandler<GetBedsByPropertyAndRoomQuery, ApiResponse<List<BedDto>>>
+    public class GetBedsByPropertyAndRoomQueryHandler: IRequestHandler<GetBedsByPropertyAndRoomQuery, ApiResponse<List<BedDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -22,9 +21,7 @@ namespace PayingGuest.Application.Queries
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse<List<BedDto>>> Handle(
-            GetBedsByPropertyAndRoomQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<BedDto>>> Handle(GetBedsByPropertyAndRoomQuery request, CancellationToken cancellationToken)
         {
             var beds = await _unitOfWork.Beds
                 .GetBedsByPropertyAndRoomAsync(request.PropertyId, request.RoomId);

@@ -511,10 +511,7 @@ namespace PayingGuest.Infrastructure.Data
                           .WithMany(b => b.Payment)
                           .HasForeignKey(e => e.BookingId);
                          
-                    modelBuilder.Entity<Payment>()
-                            .HasOne(p => p.Booking)
-                            .WithMany(b => b.Payment)
-                            .HasForeignKey(p => p.BookingId);
+               
                            
                 });
                 modelBuilder.Entity<Floor>(entity =>

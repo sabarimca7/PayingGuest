@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 using PayingGuest.Application.DTOs;
 using PayingGuest.Application.Interfaces;
+using PayingGuest.Domain.Entities;
+using PayingGuest.Domain.Interfaces;
 using PayingGuest.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -24,12 +27,13 @@ namespace PayingGuest.Infrastructure.Repositories
             return await (
                 from p in _context.Payment.AsNoTracking()
                 join b in _context.Booking.AsNoTracking()
-                    on p.BookingId equals b.BookingId
+                    on p.BookingId equals b.BookingId   // ✅ FK join
                 join u in _context.User.AsNoTracking()
                     on b.UserId equals u.UserId
-                orderby p.PaymentDate descending
+                orderby p.PaymentDate ascending
                 select new PaymentDetailsDto
                 {
+                    BookingNumber = b.BookingNumber,   // ✅ FROM Booking table
                     TransactionId = p.TransactionId,
                     PhoneNumber = u.PhoneNumber,
                     Amount = p.Amount,
@@ -37,5 +41,24 @@ namespace PayingGuest.Infrastructure.Repositories
                 }
             ).ToListAsync();
         }
+
+
+        // ✅ REQUIRED BY INTERFACE
+        public async Task AddAsync(Payment payment)
+        {
+            payment.TransactionId = GenerateTransactionId();
+            payment.PaymentDate = DateTime.UtcNow;
+            payment.Status = "Paid";
+
+            await _context.Payment.AddAsync(payment);
+            await _context.SaveChangesAsync();
+        }
+
+        private string GenerateTransactionId()
+        {
+            return $"TXN-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+        }
     }
+
+
 }

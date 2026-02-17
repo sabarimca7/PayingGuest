@@ -1,4 +1,5 @@
 ﻿using PayingGuest.Application.DTOs;
+using PayingGuest.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace PayingGuest.Application.Interfaces
 {
     public interface IProfileRepository
     {
+      
         Task<ProfileSummaryDto> GetUserProfileSummaryAsync(int userId);
+
+        Task UpdateProfileAsync(User user);
+        Task<User?> GetByIdAsync(int userId);
     }
 }

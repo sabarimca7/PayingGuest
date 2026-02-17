@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace PayingGuest.Application.Queries
 {
-    public class FilterRoomsQueryHandler
-         : IRequestHandler<FilterQuery, List<RoomDto>>
+    public class FilterRoomsQueryHandler: IRequestHandler<FilterQuery, List<RoomDto>>
     {
         private readonly IFilterRepository _roomFilterRepository;
 
@@ -19,12 +18,10 @@ namespace PayingGuest.Application.Queries
             _roomFilterRepository = roomFilterRepository;
         }
 
-        public async Task<List<RoomDto>> Handle(
-            FilterQuery request,
-            CancellationToken cancellationToken)
+        public async Task<List<RoomDto>> Handle(FilterQuery request,  CancellationToken cancellationToken)
         {
             var rooms = await _roomFilterRepository.FilterRoomsAsync(
-                //request.Filter.PropertyId,
+                request.Filter.PropertyId,
                 request.Filter.MinPrice,
                 request.Filter.MaxPrice,
                 request.Filter.Capacity
@@ -38,7 +35,7 @@ namespace PayingGuest.Application.Queries
                 RentPerBed = r.RentPerBed,
                 TotalBeds = r.TotalBeds,
                 PropertyId = r.PropertyId,
-                Image = r.RoomId == 2 ? "assets/img/single.jpg" : r.RoomId == 5 ? "assets/img/double.jpg" : "assets/img/triple.jpg",
+                Image = r.RoomId == 26 ? "assets/img/single.jpg" : r.RoomId == 27 ? "assets/img/double.jpg" : "assets/img/triple.jpg",
 
                 Features = new List<string>
                 {
