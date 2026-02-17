@@ -235,7 +235,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
         options.AddPolicy("PayingGuestCorsPolicy",
             policy =>
             {
-                policy.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost:5000")
+                policy.AllowAnyOrigin() // For production, specify allowed origins instead of AllowAnyOrigin
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
