@@ -54,6 +54,10 @@ namespace PayingGuest.Infrastructure.Data
             {
                 entity.ToTable("Property");
                 entity.HasKey(e => e.PropertyId);
+                entity.Property(e => e.Status)
+                  .HasMaxLength(50);
+                entity.Property(e => e.Description)
+                 .HasMaxLength(100);
             });
 
             //// AuditLog configuration

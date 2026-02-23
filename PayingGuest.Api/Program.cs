@@ -185,6 +185,8 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
     services.AddScoped<IProfileRepository, ProfileRepository>();
     services.AddScoped<IBookingRepository, BookingRepository>();
 
+    services.AddScoped<IPropertyRepository, PropertyRepository>();
+
     services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly)
 );
