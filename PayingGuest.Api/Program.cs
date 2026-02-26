@@ -237,7 +237,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
         options.AddPolicy("PayingGuestCorsPolicy",
             policy =>
             {
-                policy.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost:5000")
+                policy.AllowAnyOrigin() // For production, specify allowed origins instead of AllowAnyOrigin
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
@@ -255,47 +255,35 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 // Configure Middleware Pipeline
 static void ConfigureMiddleware(WebApplication app, IWebHostEnvironment env)
 {
-    // Enable response compression
+    app.UsePathBase("/PayingGuest"); // must match IIS alias
+
+    app.UseStaticFiles();             // required for Swagger UI HTML, JS, CSS
     app.UseResponseCompression();
 
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.UseSwaggerUI(c =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PayingGuest API V1");
+        c.SwaggerEndpoint("./v1/swagger.json", "PayingGuest API v1");
+        c.RoutePrefix = "swagger"; // HTML page at /PayingGuest/swagger
     });
 
-
-    // Security headers middleware
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-        context.Response.Headers.Add("X-Frame-Options", "DENY");
-        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
-        context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
-        context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';");
-
-        await next();
-    });
-
-    // Standard middleware
+    // Security headers, CORS, etc.
     app.UseHttpsRedirection();
-
-    // Use CORS
     app.UseCors("PayingGuestCorsPolicy");
 
-
-    // Serve static files (for custom Swagger CSS if needed)
-    //app.UseStaticFiles();
-
-    // Custom middleware
-    //app.UseMiddleware<TokenValidationMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-    // Authentication & Authorization
     app.UseAuthentication();
     app.UseAuthorization();
+
+    app.UseRouting();
     app.MapControllers();
+
+    // Test endpoint
+    app.MapGet("/", () => "PayingGuest API is running!");
 }
+
+
 
 // Make Program class public for integration tests
 public partial class Program { }
