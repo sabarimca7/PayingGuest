@@ -62,6 +62,6 @@ namespace PayingGuest.Application.DTOs
         public int TotalFloors { get; set; }
         public int TotalRooms { get; set; }
         public string PropertyType { get; set; } = string.Empty;
-
+        public bool IsActive { get; set; }
     }
 }

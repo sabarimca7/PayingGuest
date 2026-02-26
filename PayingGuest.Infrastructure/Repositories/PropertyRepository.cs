@@ -44,7 +44,7 @@ namespace PayingGuest.Infrastructure.Repositories
         }
         public async Task UpdateAsync(Property property)
         {
-            _context.Property.Remove(property);
+            _context.Property.Update(property);
             await _context.SaveChangesAsync();
         }
     }

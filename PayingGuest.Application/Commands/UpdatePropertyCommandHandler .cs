@@ -37,7 +37,8 @@ namespace PayingGuest.Application.Commands
                 EmailAddress = dto.EmailAddress,
                 TotalFloors = dto.TotalFloors,
                 TotalRooms = dto.TotalRooms,
-                PropertyType = dto.PropertyType
+                PropertyType = dto.PropertyType,
+                IsActive = dto.IsActive
             };
 
             await _repository.UpdateAsync(property);
