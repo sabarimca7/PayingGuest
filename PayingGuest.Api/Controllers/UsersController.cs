@@ -143,7 +143,18 @@ namespace PayingGuest.Api.Controllers
             return NotFound(result);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
 
+            if (result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
 
     }
 }

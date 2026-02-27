@@ -239,8 +239,8 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
             {
                 policy.AllowAnyOrigin() // For production, specify allowed origins instead of AllowAnyOrigin
                       .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials();
+                      .AllowAnyMethod();
+                      //.AllowCredentials();
             });
     });
 
