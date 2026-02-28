@@ -895,3 +895,24 @@ REFERENCES [PG].[User] ([UserId])
 GO
 ALTER TABLE [PG].[UserToken] CHECK CONSTRAINT [FK_UserToken_User]
 GO
+
+
+  alter table [PG].[User]
+add Onboarded BIt
+
+
+SELECT UserId, PropertyId, Onboarded FROM [PG].[User]
+
+
+UPDATE [PG].[User]
+SET Onboarded = 0
+WHERE Onboarded IS NULL;
+
+
+ALTER TABLE [PG].[User]
+ALTER COLUMN Onboarded BIT NOT NULL;
+
+
+
+ALTER TABLE [PG].[User]
+ADD CONSTRAINT DF_Users_Onboarded DEFAULT 0 FOR Onboarded;

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using PayingGuest.Application.DTOs;
+using PayingGuest.Application.Interfaces;
 using PayingGuest.Common.Models;
 using PayingGuest.Domain.Entities;
 using PayingGuest.Domain.Interfaces;
@@ -13,62 +14,92 @@ namespace PayingGuest.Application.Commands
 {
 
     public class CreateUserCommandHandler
-        : IRequestHandler<CreateUserCommand, ApiResponse<UserDto>>
+    : IRequestHandler<CreateUserCommand, ApiResponse<UserDto>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IIdentityService _identityService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateUserCommandHandler(IUserRepository userRepository)
+        public CreateUserCommandHandler(
+            IUserRepository userRepository,
+            IIdentityService identityService,
+            IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
+            _identityService = identityService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ApiResponse<UserDto>> Handle(
             CreateUserCommand request,
             CancellationToken cancellationToken)
         {
-            // 🔍 Check duplicate email
-            if (await _userRepository.EmailExistsAsync(request.EmailAddress))
+            try
             {
-                return new ApiResponse<UserDto>
+                // 1️⃣ Check duplicate in business table
+                if (await _userRepository.EmailExistsAsync(request.EmailAddress))
                 {
-                    Success = false,
-                    Message = "Email already exists"
+                    return ApiResponse<UserDto>
+                        .ErrorResponse("Email already exists");
+                }
+
+                // 2️⃣ Create Identity user
+                var identityUserId = await _identityService.CreateUserAsync(
+                    request.EmailAddress,
+                    request.Password,
+                    request.FirstName,
+                    request.LastName,
+                    request.UserType);
+
+                //if (string.IsNullOrEmpty(identityUserId))
+                //{
+                //    return ApiResponse<UserDto>
+                //        .ErrorResponse("Identity user creation failed");
+                //}
+
+                // 3️⃣ Create Business user
+                var user = new User
+                {
+                    IdentityServerUserId = identityUserId, // 🔥 LINK HERE
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    EmailAddress = request.EmailAddress,
+                    PhoneNumber = request.PhoneNumber,
+                    UserType = request.UserType,
+                    PropertyId = request.PropertyId,
+                    IsActive = true,
+                    IsOnboarded = true,
+                    CreatedDate = DateTime.UtcNow
                 };
+
+                await _userRepository.AddAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                var dto = new UserDto
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    EmailAddress = user.EmailAddress,
+                    PhoneNumber = user.PhoneNumber,
+                    UserType = user.UserType,
+                    PropertyId = user.PropertyId,
+                    IsActive = user.IsActive,
+                    CreatedDate = user.CreatedDate,
+                    IdentityServerUserId = user.IdentityServerUserId,
+                    Roles = new List<string> { user.UserType } ,
+                    RoleIds = new List<int>()                                                                   
+                };
+
+                return ApiResponse<UserDto>
+                    .SuccessResponse(dto, "User created successfully");
             }
-
-            var user = new User
+            catch (Exception ex)
             {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                EmailAddress = request.EmailAddress,
-                PhoneNumber = request.PhoneNumber,
-                UserType = request.UserType,
-                PropertyId = request.PropertyId,
-                IsActive = true,
-                CreatedDate = DateTime.UtcNow
-            };
-
-            var createdUser = await _userRepository.AddAsync(user);
-
-            var dto = new UserDto
-            {
-                UserId = createdUser.UserId,
-                FirstName = createdUser.FirstName,
-                LastName = createdUser.LastName,
-                EmailAddress = createdUser.EmailAddress,
-                PhoneNumber = createdUser.PhoneNumber,
-                UserType = createdUser.UserType,
-                PropertyId = createdUser.PropertyId,
-                IsActive = createdUser.IsActive,
-                CreatedDate = createdUser.CreatedDate
-            };
-
-            return new ApiResponse<UserDto>
-            {
-                Success = true,
-                Message = "User created successfully",
-                Data = dto
-            };
+                return ApiResponse<UserDto>
+                    .ErrorResponse($"User creation failed: {ex.Message}");
+            }
         }
     }
 }
+

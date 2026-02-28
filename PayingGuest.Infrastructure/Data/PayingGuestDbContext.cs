@@ -47,6 +47,10 @@ namespace PayingGuest.Infrastructure.Data
                 entity.HasOne(e => e.Property)
                     .WithMany(p => p.Users)
                     .HasForeignKey(e => e.PropertyId);
+                modelBuilder.Entity<User>()
+    .Property(u => u.IsOnboarded)
+    .HasColumnName("onboarded");
+
             });
 
             //// Property configuration

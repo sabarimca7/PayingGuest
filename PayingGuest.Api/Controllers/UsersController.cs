@@ -156,5 +156,19 @@ namespace PayingGuest.Api.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("property/{propertyId}/onboarded")]
+        public async Task<IActionResult> GetOnboardedUsers(int propertyId)
+        {
+            var result = await _mediator
+                .Send(new GetOnboardedUsersQuery(propertyId));
+
+            return Ok(new ApiResponse<List<UserDto>>
+            {
+                Success = true,
+                Message = "Onboarded users fetched successfully.",
+                Data = result
+            });
+        }
+
     }
 }

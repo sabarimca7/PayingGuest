@@ -7,6 +7,7 @@ namespace PayingGuest.Domain.Entities;
 public class User : BaseEntity
 {
     public int UserId { get; set; }
+   
     public int PropertyId { get; set; }
     public string UserType { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
@@ -31,5 +32,7 @@ public class User : BaseEntity
   
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public ICollection<Booking> Booking { get; set; } = new List<Booking>();
+    public bool IsOnboarded { get; set; }
+
 
 }

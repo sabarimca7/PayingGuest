@@ -189,7 +189,7 @@ namespace PayingGuest.Infrastructure.Services
             }
         }
 
-        public async Task<int> CreateUserAsync(string username, string password, string firstName, string lastName)
+        public async Task<int> CreateUserAsync(string username, string password, string firstName, string lastName,string UserType)
         {
             try
             {
@@ -204,7 +204,8 @@ namespace PayingGuest.Infrastructure.Services
                     Username = username,
                     Password = password,
                     Firstname = firstName,
-                    Lastname = lastName
+                    Lastname = lastName,
+                    UserType=UserType
                 };
 
                 _httpClient.DefaultRequestHeaders.Authorization =

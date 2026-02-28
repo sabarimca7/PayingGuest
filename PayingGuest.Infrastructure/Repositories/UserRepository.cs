@@ -107,6 +107,12 @@ namespace PayingGuest.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
+        public async Task<List<User>> GetOnboardedUsersByPropertyAsync(int propertyId)
+        {
+            return await _context.User
+                .Where(u => u.PropertyId == propertyId && u.IsOnboarded)
+                .ToListAsync();
+        }
     }
 
 }

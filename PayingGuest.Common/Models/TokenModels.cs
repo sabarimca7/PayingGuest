@@ -42,6 +42,7 @@ namespace PayingGuest.Common.Models
         public string? Lastname { get; set; }
         public string? EmailAddress { get; set; }
         public bool IsActive { get; set; } = true;
+        public string UserType { get; set; }
     }
 
     public class TokenResponse

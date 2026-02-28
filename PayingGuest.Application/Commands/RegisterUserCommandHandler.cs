@@ -54,7 +54,8 @@ namespace PayingGuest.Application.Commands
                     request.RegisterUserDto.EmailAddress,
                     request.RegisterUserDto.Password,
                     request.RegisterUserDto.FirstName,
-                    request.RegisterUserDto.LastName
+                    request.RegisterUserDto.LastName,
+                    request.RegisterUserDto.UserType
                 );
                 if (identityServerUserId <= 0)
                 {

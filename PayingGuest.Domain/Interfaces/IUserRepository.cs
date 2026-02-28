@@ -17,5 +17,6 @@ namespace PayingGuest.Domain.Interfaces
         Task DeleteAsync(User user);
         Task DeleteUserWithBookingsAsync(int userId); // Hard delete with FK cleanup
         Task<User> AddAsync(User user);
+        Task<List<User>> GetOnboardedUsersByPropertyAsync(int propertyId);
     }
 }
